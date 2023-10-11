@@ -1,0 +1,197 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios';
+import { useNavigation } from "@react-navigation/native";
+
+export default function EditProfile({ route }) {
+  const { profileData } = route.params;
+  const [fullName, setFullName] = useState(profileData.fullName);
+  const [email, setEmail] = useState(profileData.email);
+  const [contactNumber, setContactNumber] = useState(
+    profileData.contactNumber.toString()
+  );
+  const navigation = useNavigation();
+  const [dateOfBirth, setDateOfBirth] = useState(new Date(profileData.dateOfBirth));
+  const [address, setAddress] = useState(profileData.address);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const updateProfile = async () => {
+    try {
+      const updatedProfile = {
+        fullName,
+        email,
+        contactNumber,
+        dateOfBirth,
+        address,
+        password: profileData.password,
+        profilePic: profileData.profilePic,
+
+      };
+
+      // Make a PUT request to update the profile data
+      const response = await axios.patch(
+        `https://car-wash-backend-api.onrender.com/api/agents/${profileData._id}`,
+        updatedProfile
+      );
+
+      // Check if the update was successful (you may want to add more error handling)
+      if (response.status === 200) {
+        // Navigate to the Profile page after the update
+        navigation.navigate('Profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile: ', error);
+      // Handle error appropriately
+    }
+}
+
+  const showDatepicker = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDateOfBirth(selectedDate);
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Full Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Edit your name"
+          placeholderTextColor="#000"
+          value={fullName}
+          onChangeText={(text) => setFullName(text)}
+          keyboardType="text"
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Edit your email"
+          placeholderTextColor="#000"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          keyboardType="email-address"
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Contact Number</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Edit your contact number"
+          placeholderTextColor="#000"
+          value={contactNumber}
+          onChangeText={(text) => setContactNumber(text)}
+          keyboardType="numeric"
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Date of Birth</Text>
+        <TouchableOpacity onPress={showDatepicker}>
+          <Text style={styles.datePickerText}>
+            {dateOfBirth.toISOString().split('T')[0]}
+          </Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={dateOfBirth}
+            mode="date"
+            placeholderTextColor="#000"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Address</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Edit your address"
+          placeholderTextColor="#000"
+          value={address}
+          onChangeText={(text) => setAddress(text)}
+          keyboardType="text"
+        />
+      </View>
+
+      <TouchableOpacity
+        style={styles.updateButton}
+        onPress={updateProfile}>
+        <Text style={styles.updateButtonText}>Update Profile</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#D8D8D8',
+    paddingTop: 20,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#000',
+  },
+  input: {
+    height: 40,
+    width: 300,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 5,
+    paddingLeft: 10,
+    fontSize: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  datePickerText: {
+    height: 40,
+    paddingTop : 10 ,
+    width: 300,
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 5,
+    paddingLeft: 10,
+    fontSize: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  updateButton: {
+    backgroundColor: '#FFD369',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  updateButtonText: {
+    fontSize: 18,
+    color: '#000000',
+    fontWeight: 'bold',
+  },
+});
