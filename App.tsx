@@ -11,6 +11,7 @@ import ViewMorePage from "./components/ViewMorePage";
 import ViewHistory from "./components/ViewMore";
 import OnGoingBooking from "./components/OnGointBookingDetails";
 import EditProfile from "./components/EditProfile";
+import ProfilePage from "./components/ProfilePage";
 
 const Stack = createStackNavigator();
 
@@ -29,7 +30,15 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Login2" component={Login2} />
         <Stack.Screen name="signup" component={AgentInfoPage} />
-        <Stack.Screen name="Home" component={BottomTabNavigation} />
+        <Stack.Screen name="Home" 
+        options={{headerShown:false}}
+        initialParams={{
+          initialRouteName: "Home",
+        }}
+        //@ts-ignore
+        initialRouteName="Home"
+        //@ts-ignore
+        screenOptions={{headerShown:false}}component={BottomTabNavigation} />
         <Stack.Screen
           name="BookingDetailsScreen"
           component={BookingDetailsScreen}
@@ -38,6 +47,7 @@ const App = () => {
         <Stack.Screen name="ViewMore" component={ViewMorePage} />
         <Stack.Screen name="ViewMore_history" component={ViewMorePage} />
         <Stack.Screen name="editProfile" component={EditProfile}/>
+        <Stack.Screen name="ProfilePage" component={ProfilePage}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

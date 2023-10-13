@@ -7,52 +7,76 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native';
 
 export default function EditProfile({ route }) {
   const { profileData } = route.params;
   const [fullName, setFullName] = useState(profileData.fullName);
   const [email, setEmail] = useState(profileData.email);
-  const [contactNumber, setContactNumber] = useState(
-    profileData.contactNumber.toString()
-  );
+  const [contactNumber, setContactNumber] = useState(profileData.contactNumber.toString());
   const navigation = useNavigation();
   const [dateOfBirth, setDateOfBirth] = useState(new Date(profileData.dateOfBirth));
   const [address, setAddress] = useState(profileData.address);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const confirmUpdate = () => {
+    Alert.alert(
+      'Confirm Update',
+      'Are you sure you want to update your profile?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: updateProfile,
+        },
+      ]
+    );
+  };
+
   const updateProfile = async () => {
     try {
+      const formattedDOB = formatDate(dateOfBirth);
+
       const updatedProfile = {
         fullName,
         email,
         contactNumber,
-        dateOfBirth,
+        dateOfBirth: formattedDOB,
         address,
         password: profileData.password,
         profilePic: profileData.profilePic,
-
       };
 
-      // Make a PUT request to update the profile data
       const response = await axios.patch(
         `https://car-wash-backend-api.onrender.com/api/agents/${profileData._id}`,
         updatedProfile
       );
 
-      // Check if the update was successful (you may want to add more error handling)
       if (response.status === 200) {
-        // Navigate to the Profile page after the update
+        Alert.alert('Profile Updated', 'Your profile has been updated.');
         navigation.navigate('Profile');
+      } else {
+        Alert.alert('Update Failed', 'Failed to update your profile. Please try again.');
       }
     } catch (error) {
       console.error('Error updating profile: ', error);
-      // Handle error appropriately
+      Alert.alert('Update Failed', 'An error occurred while updating your profile. Please try again.');
     }
-}
+  };
 
   const showDatepicker = () => {
     setShowDatePicker(true);
@@ -76,7 +100,7 @@ export default function EditProfile({ route }) {
           placeholder="Edit your name"
           placeholderTextColor="#000"
           value={fullName}
-          onChangeText={(text) => setFullName(text)}
+          onChangeText={text => setFullName(text)}
           keyboardType="text"
         />
       </View>
@@ -88,7 +112,7 @@ export default function EditProfile({ route }) {
           placeholder="Edit your email"
           placeholderTextColor="#000"
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={text => setEmail(text)}
           keyboardType="email-address"
         />
       </View>
@@ -100,7 +124,7 @@ export default function EditProfile({ route }) {
           placeholder="Edit your contact number"
           placeholderTextColor="#000"
           value={contactNumber}
-          onChangeText={(text) => setContactNumber(text)}
+          onChangeText={text => setContactNumber(text)}
           keyboardType="numeric"
         />
       </View>
@@ -109,7 +133,7 @@ export default function EditProfile({ route }) {
         <Text style={styles.label}>Date of Birth</Text>
         <TouchableOpacity onPress={showDatepicker}>
           <Text style={styles.datePickerText}>
-            {dateOfBirth.toISOString().split('T')[0]}
+            {formatDate(dateOfBirth)}
           </Text>
         </TouchableOpacity>
         {showDatePicker && (
@@ -132,14 +156,12 @@ export default function EditProfile({ route }) {
           placeholder="Edit your address"
           placeholderTextColor="#000"
           value={address}
-          onChangeText={(text) => setAddress(text)}
+          onChangeText={text => setAddress(text)}
           keyboardType="text"
         />
       </View>
 
-      <TouchableOpacity
-        style={styles.updateButton}
-        onPress={updateProfile}>
+      <TouchableOpacity style={styles.updateButton} onPress={confirmUpdate}>
         <Text style={styles.updateButtonText}>Update Profile</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
@@ -168,16 +190,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#000',
     borderRadius: 5,
+    color: '#000',
     paddingLeft: 10,
     fontSize: 16,
     backgroundColor: '#FFFFFF',
   },
   datePickerText: {
     height: 40,
-    paddingTop : 10 ,
+    paddingTop: 10,
     width: 300,
     borderWidth: 1,
-    borderColor: "#000",
+    borderColor: '#000',
     borderRadius: 5,
     paddingLeft: 10,
     fontSize: 16,

@@ -56,17 +56,7 @@ const BottomTabNavigation = () => {
           headerShown: false, // Hide the header for this screen
         }}
       />
-      <Tab.Screen
-        name="Profile"
-        component={ProfilePage}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="user" size={size} color={color} />
-          ),
-          headerShown: false, // Hide the header for this screen
-        }}
-      />
+    
     </Tab.Navigator>
   );
 };

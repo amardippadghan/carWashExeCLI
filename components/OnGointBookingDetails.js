@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
-  Alert,
-} from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-
+import { View, Text, TouchableOpacity, Linking, Alert, useColorScheme } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { PERMISSIONS, request, check } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
+import  tw  from 'twrnc';
 
 export default function OnGoingBookingDetails({ route }) {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
   const { booking } = route.params;
   const navigation = useNavigation();
   const [currentLocation, setCurrentLocation] = useState(null);
-  const [isTrackingActive, setIsTrackingActive] = useState(false); // State to track location tracking status
+  const [bookingDetails, setBookingDetails] = useState(booking);
+  const [isTrackingActive, setIsTrackingActive] = useState(false);
 
   const handleCallClient = () => {
-    const phoneNumber = booking.clientContact;
+    const phoneNumber = bookingDetails.clientContact;
     Linking.openURL(`tel:+91${phoneNumber}`);
   };
 
   const patchBookingStatus = async (status) => {
     try {
       const response = await axios.patch(
-        `https://car-wash-backend-api.onrender.com/api/bookings/${booking._id}`,
+        `https://car-wash-backend-api.onrender.com/api/bookings/${bookingDetails._id}`,
         { status }
       );
+
       setBookingDetails(response.data);
+
       Alert.alert(
-        status === 'PickUp'
-          ? 'Great, Status updated to Car is Pickup Now'
-          : 'Great Job, Task completed'
+        status === 'PickUp' ? 'Great, Status updated to Car is Pickup Now' : 'Great Job, Task completed'
       );
     } catch (error) {
       console.error('Error updating booking status:', error);
@@ -67,7 +63,6 @@ export default function OnGoingBookingDetails({ route }) {
             (position) => {
               const { latitude, longitude } = position.coords;
               setCurrentLocation({ latitude, longitude });
-              console.log(latitude, longitude)
               patchLocation({ latitude, longitude });
             },
             (error) => {
@@ -82,20 +77,14 @@ export default function OnGoingBookingDetails({ route }) {
     const patchLocation = ({ latitude, longitude }) => {
       const patchData = {
         location: { latitude, longitude },
-        AgentID: booking.agentId,
-        bookingID: [booking._id],
-        lastSeen: new Date().toLocaleString('en-IN', {
-          timeZone: 'Asia/Kolkata',
-        }),
+        AgentID: bookingDetails.agentId,
+        bookingID: [bookingDetails._id],
+        lastSeen: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
       };
 
       axios
-        .patch(
-          `https://car-wash-backend-api.onrender.com/api/agentlocation/${booking.locationId}`,
-          patchData
-        )
+        .patch(`https://car-wash-backend-api.onrender.com/api/agentlocation/${bookingDetails.locationId}`, patchData)
         .then((response) => {
-          console.log('Location patched successfully:', response.data);
           isFetchingLocation = false;
         })
         .catch((error) => {
@@ -106,157 +95,89 @@ export default function OnGoingBookingDetails({ route }) {
 
     checkLocationPermission();
 
-    // Clear the location interval when the component unmounts
     return () => {
       clearInterval(locationInterval);
     };
   }, [isTrackingActive]);
 
   const startTrackingLocation = () => {
-    // Start or stop tracking the location by toggling isTrackingActive
     setIsTrackingActive(!isTrackingActive);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[tw`flex-1 p-4`, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300`]}>
       <TouchableOpacity
         style={[
-          styles.button,
-          {
-            backgroundColor: isTrackingActive ? 'red' : '#3498db',
-            alignSelf: 'flex-end',
-          },
+          tw`w-15 h-15 mb-3 rounded-2xl items-center justify-center self-end`,
+          isTrackingActive ? tw`bg-red-500` : tw`bg-blue-500`,
         ]}
         onPress={startTrackingLocation}
       >
-        <Text style={styles.buttonText}>
+        <Text style={tw`font-sans text-sm text-black`}>
           {isTrackingActive ? 'Stop Tracking' : 'Start Tracking'}
         </Text>
       </TouchableOpacity>
-      {booking ? (
+
+      {bookingDetails ? (
         <View>
-         
-
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Client Information</Text>
-            <Text style={styles.text}>Client Name: {booking.clientName}</Text>
+          <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
+            <Text style={tw`text-2xl font-bold mb-2 text-black`}>Client Information</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Client Name: {bookingDetails.clientName}</Text>
             <TouchableOpacity onPress={handleCallClient}>
-              <Text style={styles.phoneNumber}>Client Contact: {booking.clientContact}</Text>
+              <Text style={tw`text-base text-blue-500 mb-2`}>Client Contact: {bookingDetails.clientContact}</Text>
             </TouchableOpacity>
-            <Text style={styles.text}>Pickup Address: {booking.pickupAddress}</Text>
-            <Text style={styles.text}>Date: {booking.date}</Text>
-            <Text style={styles.text}>Time: {booking.time}</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Pickup Address: {bookingDetails.pickupAddress}</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Date: {bookingDetails.date}</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Time: {bookingDetails.time}</Text>
           </View>
 
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Service Details</Text>
-            <Text style={styles.text}>Service Name: {booking.servicesName}</Text>
-            <Text style={styles.text}>Total Price: {booking.totalPrice} INR</Text>
-          </View>
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Vehicle Details</Text>
-            <Text style={styles.text}>Vehicle Number: {booking.clientvehicleno}</Text>
-            <Text style={styles.text}>Car Model Number: {booking.clientcarmodelno}</Text>
-            <Text style={styles.text}>Location ID: {booking.locationId}</Text>
+          <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
+            <Text style={tw`text-2xl font-bold mb-2 text-black`}>Service Details</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Service Name: {bookingDetails.servicesName}</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Total Price: {bookingDetails.totalPrice} INR</Text>
           </View>
 
-          <View style={styles.buttonContainer}>
-            {booking.status === 'WorkOnIt' && (
+          <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
+            <Text style={tw`text-2xl font-bold mb-2 text-black`}>Vehicle Details</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Vehicle Number: {bookingDetails.clientvehicleno}</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Car Model Number: {bookingDetails.clientcarmodelno}</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>Location ID: {bookingDetails.locationId}</Text>
+          </View>
+
+          <View style={tw`flex-row justify-between mb-4`}>
+            {bookingDetails.status === 'WorkOnIt' && (
               <TouchableOpacity
-                style={[styles.button, { backgroundColor: '#FFD369' }]}
+                style={tw`flex-1 bg-yellow-400 rounded items-center justify-center mx-1 p-2`}
                 onPress={() => patchBookingStatus('PickUp')}
               >
-                <Text style={styles.buttonText}>Pick Up</Text>
+                <Text style={tw`font-sans text-base text-black`}>Pick Up</Text>
               </TouchableOpacity>
             )}
 
-            {booking.status === 'PickUp' && (
+            {bookingDetails.status === 'PickUp' && (
               <TouchableOpacity
-                style={[styles.button, { backgroundColor: '#FFD369' }]}
+                style={tw`flex-1 bg-yellow-400 rounded items-center justify-center mx-1 p-2`}
                 onPress={() => patchBookingStatus('Delivered')}
               >
-                <Text style={styles.buttonText}>Delivered</Text>
+                <Text style={tw`font-sans text-base text-black`}>Delivered</Text>
               </TouchableOpacity>
             )}
           </View>
         </View>
       ) : (
-        <Text style={{ justifyContent: 'center' }}>Loading...</Text>
+        <Text style={tw`justify-center text-${isDarkMode ? 'white' : 'black'}`}>Loading...</Text>
       )}
 
       {currentLocation && (
-        <View style={styles.locationContainer}>
-          <Text style={styles.locationText}>Current Latitude: {currentLocation.latitude}</Text>
-          <Text style={styles.locationText}>Current Longitude: {currentLocation.longitude}</Text>
+        <View style={tw`mt-5`}>
+          <Text style={tw`text-base text-${isDarkMode ? 'green-300' : 'green-500'}`}>
+            Current Latitude: {currentLocation.latitude}
+          </Text>
+          <Text style={tw`text-base text-${isDarkMode ? 'green-300' : 'green-500'}`}>
+            Current Longitude: {currentLocation.longitude}
+          </Text>
         </View>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#D8D8D8',
-  },
-  text: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 8,
-  },
-  phoneNumber: {
-    fontSize: 16,
-    color: 'blue',
-    marginBottom: 8,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  button: {
-    flex: 1,
-    height: 52,
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'sans-serif',
-    fontSize: 18,
-    color: '#FFFFFF',
-    marginHorizontal: 6,
-    borderRadius: 6,
-    marginBottom: 20,
-  },
-  buttonText: {
-    fontFamily: 'sans-serif',
-    fontSize: 18,
-    color: '#000000',
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#000',
-  },
-  locationContainer: {
-    marginTop: 20,
-  },
-  locationText: {
-    fontSize: 16,
-    color: 'green',
-  },
-});
