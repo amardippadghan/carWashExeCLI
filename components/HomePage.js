@@ -12,6 +12,7 @@ import {
   useColorScheme,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {BackHandler} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'twrnc';
@@ -51,6 +52,22 @@ const HomePage = () => {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        // Check if the current route is the home page
+        if (navigation.isFocused()) {
+          // If it's the home page, prevent going back
+          return true;
+        }
+        // If it's not the home page, allow going back
+        return false;
+      },
+    );
+
+    return () => backHandler.remove(); // Clean up the event listener
+  }, [navigation]);
 
   const renderBookingCard = booking => {
     const handleViewMore = () => {
@@ -131,7 +148,7 @@ const HomePage = () => {
           <Icon style={tw`mr-2 pt-3`} name="search" color="gray" size={20} />
           <TextInput
             placeholder="Search... by Date"
-            style={tw`flex-1 ${isDarkMode ? 'text-white' : 'text-black'}`}
+            style={tw`flex-1 text-black`}
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholderTextColor="#000"
@@ -155,11 +172,18 @@ const HomePage = () => {
           <View style={tw`mb-4`}>
             {filteredBookings.length === 0 ? (
               <View style={tw`flex-1 items-center justify-center`}>
-              <FontAwesome5 name="exclamation-circle" size={35} color="#00CCBB" />
-
+                <FontAwesome5
+                  name="exclamation-circle"
+                  size={35}
+                  color="#00CCBB"
+                />
               </View>
             ) : (
-              filteredBookings.map(booking => renderBookingCard(booking))
+              filteredBookings.map(booking => (
+                <View key={booking._id} style={tw`mb-4`}>
+                  {renderBookingCard(booking)}
+                </View>
+              ))
             )}
           </View>
         </ScrollView>

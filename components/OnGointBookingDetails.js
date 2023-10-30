@@ -1,15 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Linking, Alert, useColorScheme } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { PERMISSIONS, request, check } from 'react-native-permissions';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Linking,
+  Alert,
+  useColorScheme,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {PERMISSIONS, request, check} from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import  tw  from 'twrnc';
+import tw from 'twrnc';
 
-export default function OnGoingBookingDetails({ route }) {
+export default function OnGoingBookingDetails({route}) {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  const { booking } = route.params;
+  const {booking} = route.params;
   const navigation = useNavigation();
   const [currentLocation, setCurrentLocation] = useState(null);
   const [bookingDetails, setBookingDetails] = useState(booking);
@@ -20,17 +27,19 @@ export default function OnGoingBookingDetails({ route }) {
     Linking.openURL(`tel:+91${phoneNumber}`);
   };
 
-  const patchBookingStatus = async (status) => {
+  const patchBookingStatus = async status => {
     try {
       const response = await axios.patch(
         `https://car-wash-backend-api.onrender.com/api/bookings/${bookingDetails._id}`,
-        { status }
+        {status},
       );
 
       setBookingDetails(response.data);
 
       Alert.alert(
-        status === 'PickUp' ? 'Great, Status updated to Car is Pickup Now' : 'Great Job, Task completed'
+        status === 'PickUp'
+          ? 'Great, Status updated to Car is Pickup Now'
+          : 'Great Job, Task completed',
       );
     } catch (error) {
       console.error('Error updating booking status:', error);
@@ -60,34 +69,39 @@ export default function OnGoingBookingDetails({ route }) {
         if (!isFetchingLocation && isTrackingActive) {
           isFetchingLocation = true;
           Geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
-              setCurrentLocation({ latitude, longitude });
-              patchLocation({ latitude, longitude });
+            position => {
+              const {latitude, longitude} = position.coords;
+              setCurrentLocation({latitude, longitude});
+              patchLocation({latitude, longitude});
             },
-            (error) => {
+            error => {
               console.error('Error getting location:', error);
             },
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
           );
         }
-      }, 5000);
+      }, 6000);
     };
 
-    const patchLocation = ({ latitude, longitude }) => {
+    const patchLocation = ({latitude, longitude}) => {
       const patchData = {
-        location: { latitude, longitude },
+        location: {latitude, longitude},
         AgentID: bookingDetails.agentId,
         bookingID: [bookingDetails._id],
-        lastSeen: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        lastSeen: new Date().toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+        }),
       };
-
+     
       axios
-        .patch(`https://car-wash-backend-api.onrender.com/api/agentlocation/${bookingDetails.locationId}`, patchData)
-        .then((response) => {
+        .patch(
+          `https://car-wash-backend-api.onrender.com/api/agentlocation/${bookingDetails.locationId}`,
+          patchData,
+        )
+        .then(response => {
           isFetchingLocation = false;
         })
-        .catch((error) => {
+        .catch(error => {
           console.error('Error patching location:', error);
           isFetchingLocation = false;
         });
@@ -105,14 +119,14 @@ export default function OnGoingBookingDetails({ route }) {
   };
 
   return (
-    <View style={[tw`flex-1 p-4`, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300`]}>
+    <View
+      style={[tw`flex-1 p-4`, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300`]}>
       <TouchableOpacity
         style={[
           tw`w-15 h-15 mb-3 rounded-2xl items-center justify-center self-end`,
           isTrackingActive ? tw`bg-red-500` : tw`bg-blue-500`,
         ]}
-        onPress={startTrackingLocation}
-      >
+        onPress={startTrackingLocation}>
         <Text style={tw`font-sans text-sm text-black`}>
           {isTrackingActive ? 'Stop Tracking' : 'Start Tracking'}
         </Text>
@@ -121,35 +135,60 @@ export default function OnGoingBookingDetails({ route }) {
       {bookingDetails ? (
         <View>
           <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
-            <Text style={tw`text-2xl font-bold mb-2 text-black`}>Client Information</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Client Name: {bookingDetails.clientName}</Text>
+            <Text style={tw`text-2xl font-bold mb-2 text-black`}>
+              Client Information
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Client Name: {bookingDetails.clientName}
+            </Text>
             <TouchableOpacity onPress={handleCallClient}>
-              <Text style={tw`text-base text-blue-500 mb-2`}>Client Contact: {bookingDetails.clientContact}</Text>
+              <Text style={tw`text-base text-blue-500 mb-2`}>
+                Client Contact: {bookingDetails.clientContact}
+              </Text>
             </TouchableOpacity>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Pickup Address: {bookingDetails.pickupAddress}</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Date: {bookingDetails.date}</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Time: {bookingDetails.time}</Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Pickup Address: {bookingDetails.pickupAddress}
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Date: {bookingDetails.date}
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Time: {bookingDetails.time}
+            </Text>
           </View>
 
           <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
-            <Text style={tw`text-2xl font-bold mb-2 text-black`}>Service Details</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Service Name: {bookingDetails.servicesName}</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Total Price: {bookingDetails.totalPrice} INR</Text>
+            <Text style={tw`text-2xl font-bold mb-2 text-black`}>
+              Service Details
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Service Name: {bookingDetails.servicesName}
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Total Price: {bookingDetails.totalPrice} INR
+            </Text>
           </View>
 
           <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
-            <Text style={tw`text-2xl font-bold mb-2 text-black`}>Vehicle Details</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Vehicle Number: {bookingDetails.clientvehicleno}</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Car Model Number: {bookingDetails.clientcarmodelno}</Text>
-            <Text style={tw`text-base text-gray-800 mb-2`}>Location ID: {bookingDetails.locationId}</Text>
+            <Text style={tw`text-2xl font-bold mb-2 text-black`}>
+              Vehicle Details
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Vehicle Number: {bookingDetails.clientvehicleno}
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Car Model Number: {bookingDetails.clientcarmodelno}
+            </Text>
+            <Text style={tw`text-base text-gray-800 mb-2`}>
+              Location ID: {bookingDetails.locationId}
+            </Text>
           </View>
 
           <View style={tw`flex-row justify-between mb-4`}>
             {bookingDetails.status === 'WorkOnIt' && (
               <TouchableOpacity
                 style={tw`flex-1 bg-yellow-400 rounded items-center justify-center mx-1 p-2`}
-                onPress={() => patchBookingStatus('PickUp')}
-              >
+                onPress={() => patchBookingStatus('PickUp')}>
                 <Text style={tw`font-sans text-base text-black`}>Pick Up</Text>
               </TouchableOpacity>
             )}
@@ -157,23 +196,32 @@ export default function OnGoingBookingDetails({ route }) {
             {bookingDetails.status === 'PickUp' && (
               <TouchableOpacity
                 style={tw`flex-1 bg-yellow-400 rounded items-center justify-center mx-1 p-2`}
-                onPress={() => patchBookingStatus('Delivered')}
-              >
-                <Text style={tw`font-sans text-base text-black`}>Delivered</Text>
+                onPress={() => patchBookingStatus('Delivered')}>
+                <Text style={tw`font-sans text-base text-black`}>
+                  Delivered
+                </Text>
               </TouchableOpacity>
             )}
           </View>
         </View>
       ) : (
-        <Text style={tw`justify-center text-${isDarkMode ? 'white' : 'black'}`}>Loading...</Text>
+        <Text style={tw`justify-center text-${isDarkMode ? 'white' : 'black'}`}>
+          Loading...
+        </Text>
       )}
 
       {currentLocation && (
         <View style={tw`mt-5`}>
-          <Text style={tw`text-base text-${isDarkMode ? 'green-300' : 'green-500'}`}>
+          <Text
+            style={tw`text-base text-${
+              isDarkMode ? 'green-300' : 'green-500'
+            }`}>
             Current Latitude: {currentLocation.latitude}
           </Text>
-          <Text style={tw`text-base text-${isDarkMode ? 'green-300' : 'green-500'}`}>
+          <Text
+            style={tw`text-base text-${
+              isDarkMode ? 'green-300' : 'green-500'
+            }`}>
             Current Longitude: {currentLocation.longitude}
           </Text>
         </View>

@@ -1,110 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import React from 'react';
+import {View, Text, FlatList, useColorScheme} from 'react-native';
+import tw from 'twrnc';
 
-const ViewMorePage = ({ route }) => {
-  const [customerDetails, setCustomerDetails] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+const ViewMorePage = ({route}) => {
+  const {customer} = route.params;
+  console.warn(customer);
 
-  useEffect(() => {
-    const customerId = route.params.customer._id;
-    // Replace 'API_URL' with your actual API endpoint
-    const apiUrl = `https://car-wash-backend-api.onrender.com/api/bookings/${customerId}`;
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        setCustomerDetails(data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching customer details: ', error);
-        setIsLoading(false);
-      });
-  }, [route.params.customer._id]);
-
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#333" />
-      </View>
-    );
-  }
-
-  const renderItem = ({ item }) => (
-    <View style={styles.row}>
-      <Text style={styles.label}>{item.label}</Text>
-      <Text style={styles.value}>{item.value}</Text>
+  const renderRow = ({item}) => (
+    <View style={tw`flex-row justify-between mb-4`}>
+      <Text
+        style={[tw`text-lg font-bold`, {color: isDarkMode ? '#fff' : '#000'}]}>
+        {item.label}
+      </Text>
+      <Text style={[tw`text-lg`, {color: isDarkMode ? '#fff' : '#000'}]}>
+        {item.value}
+      </Text>
     </View>
   );
 
   const data = [
-    { label: 'Customer Name:', value: customerDetails.clientName },
-    { label: 'Service:', value: customerDetails.servicesName },
-    { label: 'Client Contact:', value: customerDetails.clientContact },
-    { label: 'Date:', value: customerDetails.date },
-    { label: 'Time:', value: customerDetails.time },
-    { label: 'Total Price:', value: `₹ ${customerDetails.totalPrice}` },
-    { label: 'Pickup Address:', value: customerDetails.pickupAddress },
-    { label: 'Client Vehicle No:', value: customerDetails.clientvehicleno },
-    { label: 'Vehical Model:', value: customerDetails.clientcarmodelno },
-    { label: 'Status:', value: customerDetails.status },
+    {label: 'Customer Name:', value: customer?.clientName},
+    {label: 'Service:', value: customer?.servicesName},
+    {label: 'Client Contact:', value: customer?.clientContact},
+    {label: 'Date:', value: customer?.date},
+    {label: 'Time:', value: customer?.time},
+    {label: 'Total Price:', value: `₹ ${customer?.totalPrice}`},
+    {label: 'Pickup Address:', value: customer?.pickupAddress},
+    {label: 'Client Vehicle No:', value: customer?.clientvehicleno},
+    {label: 'Vehicle Model:', value: customer?.clientcarmodelno},
+    {label: 'Status:', value: customer?.status},
   ];
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
+    <View
+      style={tw`flex-1 justify-center items-center ${
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      }`}>
+      <View
+        style={tw`w-full p-6 mb-16 rounded-xl shadow-md ${
+          isDarkMode ? 'bg-gray-700' : 'bg-white'
+        }`}>
         <FlatList
           data={data}
-          renderItem={renderItem}
+          renderItem={renderRow}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex',
-    alignItems: 'flex',
-    backgroundColor: '#D8D8D8',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#D8D8D8',
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 40,
-
-    marginBottom: 16,
-    marginTop : 25,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  label: {
-    fontSize: 16,
-    color: '#000',
-  },
-  value: {
-    fontSize: 16,
-    color: '#000',
-  },
-});
 
 export default ViewMorePage;
