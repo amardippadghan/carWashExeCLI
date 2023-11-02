@@ -49,13 +49,17 @@ const App = () => {
         screenOptions={{headerShown:false}}component={BottomTabNavigation} />
         <Stack.Screen
           name="BookingDetailsScreen"
+          options={{headerShown:false}
+      }
           component={BookingDetailsScreen}
         />
-        <Stack.Screen name="ongoingbooking" component={OnGoingBooking}/>
+        <Stack.Screen name="ongoingbooking" options={{headerShown:false}
+      } component={OnGoingBooking}/>
         <Stack.Screen name="ViewMore" component={ViewMorePage} />
         <Stack.Screen name="ViewMore_history" component={ViewMorePage} />
         <Stack.Screen name="editProfile" component={EditProfile}/>
-        <Stack.Screen name="ProfilePage" component={ProfilePage}/>
+        <Stack.Screen name="ProfilePage" options={{headerShown:false}
+      } component={ProfilePage}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
