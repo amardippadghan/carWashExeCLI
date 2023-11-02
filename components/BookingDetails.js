@@ -46,7 +46,7 @@ const BookingDetailsScreen = props => {
   };
 
   return (
-    <View style={tw`flex-1 p-4 bg-gray-800`}>
+    <View style={tw`flex-1 p-4 pt-10 bg-gray-800`}>
       {bookingDetails ? (
         <View>
           <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md`}>
