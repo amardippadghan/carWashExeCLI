@@ -9,12 +9,15 @@ import {
   ScrollView,
   Alert,
   Platform,
+
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import tw from 'twrnc';
 
 const AgentInfoPage = () => {
+
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -83,7 +86,6 @@ const AgentInfoPage = () => {
         'https://car-wash-backend-api.onrender.com/api/agents',
         formData,
       );
-
       console.log(response.data);
       Alert.alert('Success', 'Data is saved, go to the login page');
 
@@ -107,15 +109,16 @@ const AgentInfoPage = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.text}>Agent Information</Text>
+      behavior="padding"
+      style={tw`flex-1 items-center justify-center bg-gray-300  pl-3 pr-3`}>
+      <ScrollView contentContainerStyle={tw`items-center`}>
+        <Text style={tw`text-2xl text-gray-800 mb-5 mt-12`}>Agent Information</Text>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Full Name</Text>
+        {/* Full Name */}
+        <View style={tw`w-96 mb-4`}>
+          <Text style={tw`text-base text-black mb-1`}>Full Name</Text>
           <TextInput
-            style={styles.input}
+            style={tw`w-full h-12 bg-white rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your full name"
             placeholderTextColor="#000"
             value={fullName}
@@ -123,10 +126,11 @@ const AgentInfoPage = () => {
           />
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
+        {/* Email */}
+        <View style={tw`w-96 mb-4`}>
+          <Text style={tw`text-base text-black mb-1`}>Email</Text>
           <TextInput
-            style={styles.input}
+            style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your email"
             placeholderTextColor="#000"
             value={email}
@@ -135,159 +139,94 @@ const AgentInfoPage = () => {
           />
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Contact Number</Text>
+        {/* Contact Number */}
+        <View style={tw`w-96 mb-4`}>
+          <Text style={tw`text-base text-black mb-1`}>Contact Number</Text>
           <TextInput
-            style={styles.input}
-            placeholderTextColor="#000"
+            style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your contact number"
+            placeholderTextColor="#000"
             value={contactNumber}
             onChangeText={text => setContactNumber(text)}
             keyboardType="phone-pad"
           />
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Date of Birth</Text>
-          <TouchableOpacity onPress={showDatepicker}>
-            <Text style={styles.datePickerText}>
-              {dateOfBirth.toISOString().split('T')[0]}
-            </Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={dateOfBirth}
-              mode="date"
-              is24Hour={true}
-              display="default"
-              onChange={handleDateChange}
-            />
-          )}
+        {/* Date of Birth */}
+        <View style={tw`w-96 mb-4`}>
+          <View style={tw`w-96 mb-4`}>
+            <Text style={tw`text-base text-black mb-1`}>Date of Birth</Text>
+            <TouchableOpacity
+              onPress={showDatepicker}
+              style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow justify-center`}>
+              <Text style={tw`text-lg text-black px-3`}>
+                {dateOfBirth.toISOString().split('T')[0]}
+              </Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={dateOfBirth}
+                mode="date"
+                is24Hour={true}
+                display="default"
+                onChange={handleDateChange}
+              />
+            )}
+          </View>
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Address</Text>
+        {/* Address */}
+        <View style={tw`w-96 mb-4`}>
+          <Text style={tw`text-base text-black mb-1`}>Address</Text>
           <TextInput
-            style={styles.input}
+            style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your address"
-            value={address}
             placeholderTextColor="#000"
+            value={address}
             onChangeText={text => setAddress(text)}
           />
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
+        {/* Password */}
+        <View style={tw`w-96 mb-4`}>
+          <Text style={tw`text-base text-black mb-1`}>Password</Text>
           <TextInput
-            style={styles.input}
+            style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your password"
             secureTextEntry={true}
+            placeholderTextColor='#000'
             value={password}
             onChangeText={text => setPassword(text)}
           />
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Confirm Password</Text>
+        {/* Confirm Password */}
+        <View style={tw`w-96 mb-4`}>
+          <Text style={tw`text-base text-black mb-1`}>Confirm Password</Text>
           <TextInput
-            style={styles.input}
+            style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Confirm your password"
             secureTextEntry={true}
+            placeholderTextColor='#000'
             value={confirmPassword}
             onChangeText={text => setConfirmPassword(text)}
           />
         </View>
 
+        {/* Save Button */}
         <TouchableOpacity
-          style={[styles.button, isSaving && styles.disabledButton]}
+          style={tw`w-96 h-12 items-center justify-center  rounded-lg bg-gray-700 mt-6 mb-3`}
           onPress={handleSave}
           disabled={isSaving}>
-          {isSaving ? (
-            <Text style={styles.buttonText}>Saving...</Text>
-          ) : (
-            <Text style={styles.buttonText}>Save</Text>
-          )}
+          <Text style={tw`text-lg text-white`}>
+            {isSaving ? 'Saving...' : 'Save'}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
-};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#D8D8D8',
-    paddingTop: 30,
-  },
-  content: {
-    alignItems: 'center',
-  },
-  text: {
-    fontFamily: 'sans-serif',
-    fontSize: 24,
-    color: '#171A1FFF',
-    marginBottom: 20,
-  },
-  label: {
-    fontFamily: 'sans-serif',
-    fontSize: 14,
-    color: '#040D12',
-    marginBottom: 3,
-  },
-  inputContainer: {
-    width: 339,
-    marginBottom: 10,
-  },
-  input: {
-    width: '100%',
-    height: 49,
-    backgroundColor: '#FFFFFFFF',
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: '#9095A0FF',
-    borderStyle: 'solid',
-    shadowColor: '#171a1f',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    paddingHorizontal: 15,
-    fontFamily: 'sans-serif',
-    fontSize: 20,
-    color: '#171A1FFF',
-  },
-  datePickerText: {
-    fontFamily: 'sans-serif',
-    fontSize: 20,
-    color: '#171A1FFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#9095A0FF',
-    paddingBottom: 5,
-  },
-  button: {
-    width: 342,
-    height: 52,
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Sans-serif',
-    fontSize: 18,
-    lineHeight: 28,
-    color: '#FFFFFFFF',
-    backgroundColor: '#5B7586',
-    borderRadius: 4,
-    marginTop: 30,
-  },
-  buttonText: {
-    fontFamily: 'Sans-serif',
-    fontSize: 18,
-    lineHeight: 28,
-    color: '#FFFFFFFF',
-  },
-  disabledButton: {
-    backgroundColor: '#D3D3D3',
-  },
-});
+};
 
 export default AgentInfoPage;

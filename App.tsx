@@ -16,7 +16,7 @@ import ProfilePage from "./components/ProfilePage";
 const Stack = createStackNavigator();
 
 const App = () => {
-  
+
 
   
 
@@ -25,9 +25,19 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={"Login"}>
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Login"
+         options={
+          {headerShown : false}
+         }
+        
+        component={LoginScreen} />
         <Stack.Screen name="Login2" component={Login2} />
-        <Stack.Screen name="signup" component={AgentInfoPage} />
+        <Stack.Screen name="signup" 
+        options={{headerShown:false}
+      }
+        
+        
+        component={AgentInfoPage} />
         <Stack.Screen name="Home" 
         options={{headerShown:false}}
         initialParams={{
