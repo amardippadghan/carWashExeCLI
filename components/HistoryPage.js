@@ -9,6 +9,7 @@ import {
   RefreshControl,
   useColorScheme,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; // Import the FontAwesome5 icon
 import axios from 'axios';
@@ -98,19 +99,21 @@ const HistoryPage = () => {
     <View style={tw`flex-1 p-4 bg-${isDarkMode ? 'gray-800' : 'gray-300'}`}>
       <View style={tw`flex-row items-center space-x-2 pb-2`}>
         <View
-          style={tw`flex-row space-x-2 flex-1 border border-gray-400 rounded-md bg-white`}>
-          <FontAwesome5 // Use FontAwesome5 icon
+          style={tw`flex-row space-x-2 flex-1 border border-gray-400 rounded-md ${
+            isDarkMode ? 'bg-gray-700' : 'bg-white'
+          }`}>
+          <Icon
+            style={tw`mr-2 pt-3 ml-2`}
             name="search"
+            color="gray"
             size={20}
-            color={isDarkMode ? 'lightgray' : 'darkgray'}
-            style={tw`pt-3 ml-2`}
           />
           <TextInput
             placeholder="Search... by Date"
-            style={tw`flex-1 text-black`}
+            style={tw`flex-1 ${isDarkMode ? 'text-white' : 'text-black'}`}
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholderTextColor='darkgrey'
+            placeholderTextColor={isDarkMode ? 'lightgray' : 'darkgray'}
             keyboardType="default"
           />
         </View>

@@ -1,37 +1,31 @@
-import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import * as React from 'react';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+// Import your screen components
 import HomePage from './HomePage';
 import HistoryPage from './HistoryPage';
-import ProfilePage from './ProfilePage';
 import OngoingPage from './Ongoing';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {useEffect} from 'react';
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 const BottomTabNavigation = () => {
-  useEffect(() => {
-    console.log('running');
-    return () => {
-      console.log('unmount');
-    };
-  }, []);
-
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: '#FFD369',
-        inactiveTintColor: 'gray',
-      }}>
+      initialRouteName="HomePage"
+      activeColor="#27374D"
+      barStyle={{backgroundColor: '#FFFFD0'}}
+      shifting={true}
+      labeled={true}>
       <Tab.Screen
         name="HomePage"
         component={HomePage}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="home" size={size} color={color} />
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons name="home" color={color} size={26} />
           ),
-          headerShown: false, // Hide the header for this screen
+          tabBarColor: 'blue',
         }}
       />
       <Tab.Screen
@@ -39,10 +33,14 @@ const BottomTabNavigation = () => {
         component={OngoingPage}
         options={{
           tabBarLabel: 'Ongoing',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="tasks" size={size} color={color} />
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="format-list-checks"
+              color={color}
+              size={26}
+            />
           ),
-          headerShown: false, // Hide the header for this screen
+          tabBarColor: 'green',
         }}
       />
       <Tab.Screen
@@ -50,13 +48,12 @@ const BottomTabNavigation = () => {
         component={HistoryPage}
         options={{
           tabBarLabel: 'History',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="history" size={size} color={color} />
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons name="history" color={color} size={26} />
           ),
-          headerShown: false, // Hide the header for this screen
+          tabBarColor: 'red',
         }}
       />
-    
     </Tab.Navigator>
   );
 };

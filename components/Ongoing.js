@@ -104,15 +104,15 @@ const Ongoing = () => {
     <View style={tw`flex-1 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-300'} p-4`}>
      <View style={tw`flex-row items-center space-x-2 pb-2`}>
      <View style={tw`flex-row space-x-2 flex-1 border border-gray-400 rounded-md ${isDarkMode ? 'bg-gray-700' : 'bg-white'}`}>
-  <Icon style={tw`mr-2 pt-3 ml-2`} name="search" color="gray" size={20} />
-  <TextInput
-    placeholder="Search... by Date"
-    style={tw`flex-1 ${isDarkMode ? 'text-white' : 'text-black'}`}
-    value={searchQuery}
-    onChangeText={setSearchQuery}
-    placeholderTextColor={isDarkMode ? 'lightgray' : 'darkgray'}
-    keyboardType="default"
-  />
+       <Icon style={tw`mr-2 pt-3 ml-2`} name="search" color="gray" size={20} />
+      <TextInput
+        placeholder="Search... by Date"
+        style={tw`flex-1 ${isDarkMode ? 'text-white' : 'text-black'}`}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholderTextColor={isDarkMode ? 'lightgray' : 'darkgray'}
+        keyboardType="default"
+      />
 </View>
 
 </View>
