@@ -120,7 +120,7 @@ export default function OnGoingBookingDetails({route}) {
 
   return (
     <View
-      style={[tw`flex-1 p-4`, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300`]}>
+      style={[tw`flex-1 p-4 pt-10 `, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300 `]}>
       <TouchableOpacity
         style={[
           tw`w-15 h-15 mb-3 rounded-2xl items-center justify-center self-end`,
@@ -134,7 +134,7 @@ export default function OnGoingBookingDetails({route}) {
 
       {bookingDetails ? (
         <View>
-          <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
+          <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md`}>
             <Text style={tw`text-2xl font-bold mb-2 text-black`}>
               Client Information
             </Text>
@@ -157,7 +157,7 @@ export default function OnGoingBookingDetails({route}) {
             </Text>
           </View>
 
-          <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
+          <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md`}>
             <Text style={tw`text-2xl font-bold mb-2 text-black`}>
               Service Details
             </Text>
@@ -169,7 +169,7 @@ export default function OnGoingBookingDetails({route}) {
             </Text>
           </View>
 
-          <View style={tw`bg-white rounded p-4 mb-4 shadow-md`}>
+          <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md`}>
             <Text style={tw`text-2xl font-bold mb-2 text-black`}>
               Vehicle Details
             </Text>
