@@ -92,7 +92,7 @@ const Ongoing = () => {
           </View>
         </View>
         <TouchableOpacity
-          style={tw`bg-yellow-400 py-2 px-4 rounded-md`}
+          style={tw`bg-yellow-400 py-2 px-4 rounded-md mr-2`}
           onPress={handleViewMore}>
           <Text style={tw`text-black`}>View More</Text>
         </TouchableOpacity>
