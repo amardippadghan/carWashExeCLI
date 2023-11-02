@@ -62,6 +62,7 @@ const App = () => {
       } component={ProfilePage}/>
       </Stack.Navigator>
     </NavigationContainer>
+    
   );
 };
 

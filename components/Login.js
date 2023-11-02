@@ -7,7 +7,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  useColorScheme
+  useColorScheme, 
+  StatusBar
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -26,7 +27,7 @@ export default function Login() {
      flex: 1,
      alignItems: 'center',
      justifyContent: 'center',
-     backgroundColor: isDarkMode ? '#2d3748' : '#D8D8D8',
+     backgroundColor: isDarkMode ? '#1F2937' : '#D8D8D8',
      paddingTop: 60,
    },
    content: {
@@ -207,6 +208,7 @@ export default function Login() {
            <Text style={styles.verificationStatus}>{verificationStatus}</Text>
          ) : null}
        </ScrollView>
+       <StatusBar backgroundColor="#1F2937" barStyle={'light-content'} />
      </KeyboardAvoidingView>
    );
 }
