@@ -60,9 +60,11 @@ const BookingDetailsScreen = props => {
       ]}>
       {bookingDetails ? (
         <View>
-          <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md`}>
-            <Text style={tw`text-lg font-bold mb-2`}>Client Information</Text>
-            <Text style={tw`text-base`}>
+          <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md `}>
+            <Text style={tw`text-lg font-bold mb-2 text-black`}>
+              Client Information
+            </Text>
+            <Text style={tw`text-base text-gray-800`}>
               Client Name: {bookingDetails.clientName}
             </Text>
             <TouchableOpacity onPress={handleCallClient}>
@@ -70,29 +72,35 @@ const BookingDetailsScreen = props => {
                 Client Contact: {bookingDetails.clientContact}
               </Text>
             </TouchableOpacity>
-            <Text style={tw`text-base`}>
+            <Text style={tw`text-base text-gray-800`}>
               Pickup Address: {bookingDetails.pickupAddress}
             </Text>
-            <Text style={tw`text-base`}>Date: {bookingDetails.date}</Text>
-            <Text style={tw`text-base`}>Time: {bookingDetails.time}</Text>
+            <Text style={tw`text-base text-gray-800`}>
+              Date: {bookingDetails.date}
+            </Text>
+            <Text style={tw`text-base text-gray-800`}>
+              Time: {bookingDetails.time}
+            </Text>
           </View>
 
           <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md`}>
-            <Text style={tw`text-lg font-bold mb-2`}>Service Details</Text>
-            <Text style={tw`text-base`}>
+            <Text style={tw`text-lg font-bold mb-2 text-black`}>
+              Service Details
+            </Text>
+            <Text style={tw`text-base text-gray-800`}>
               Service Name: {bookingDetails.servicesName}
             </Text>
-            <Text style={tw`text-base`}>
+            <Text style={tw`text-base text-gray-800`}>
               Total Price: {bookingDetails.totalPrice} INR
             </Text>
           </View>
 
           <View style={tw`bg-white rounded-lg p-4 mb-4 shadow-md`}>
-            <Text style={tw`text-lg font-bold mb-2`}>Vehicle Details</Text>
-            <Text style={tw`text-base`}>
+            <Text style={tw`text-lg font-bold mb-2 text-black`}>Vehicle Details</Text>
+            <Text style={tw`text-base text-gray-800`}>
               Vehicle Number: {bookingDetails.clientvehicleno}
             </Text>
-            <Text style={tw`text-base`}>
+            <Text style={tw`text-base text-gray-800`}>
               Car Model Number: {bookingDetails.clientcarmodelno}
             </Text>
           </View>

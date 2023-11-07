@@ -72,15 +72,16 @@ export default function OnGoingBookingDetails({route}) {
             position => {
               const {latitude, longitude} = position.coords;
               setCurrentLocation({latitude, longitude});
+              console.log(currentLocation);
               patchLocation({latitude, longitude});
             },
             error => {
               console.error('Error getting location:', error);
             },
-            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+            {enableHighAccuracy: true}, // Adjust the timeout to 4 minutes (240000 milliseconds)
           );
         }
-      }, 6000);
+      }, 180000); // Set interval to 3 minutes (180000 milliseconds)
     };
 
     const patchLocation = ({latitude, longitude}) => {
@@ -92,7 +93,7 @@ export default function OnGoingBookingDetails({route}) {
           timeZone: 'Asia/Kolkata',
         }),
       };
-     
+
       axios
         .patch(
           `https://car-wash-backend-api.onrender.com/api/agentlocation/${bookingDetails.locationId}`,
@@ -100,6 +101,10 @@ export default function OnGoingBookingDetails({route}) {
         )
         .then(response => {
           isFetchingLocation = false;
+          console.log(response.data);
+          if (response.status == 200) {
+            console.log('succesfully patched ');
+          }
         })
         .catch(error => {
           console.error('Error patching location:', error);
@@ -120,7 +125,10 @@ export default function OnGoingBookingDetails({route}) {
 
   return (
     <View
-      style={[tw`flex-1 p-4 pt-10 `, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-200 `]}>
+      style={[
+        tw`flex-1 p-4 pt-10 `,
+        isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300 `,
+      ]}>
       <TouchableOpacity
         style={[
           tw`w-15 h-15 mb-3 rounded-2xl items-center justify-center self-end`,
@@ -210,7 +218,7 @@ export default function OnGoingBookingDetails({route}) {
         </Text>
       )}
 
-      {currentLocation && (
+      {currentLocation ? (
         <View style={tw`mt-5`}>
           <Text
             style={tw`text-base text-${
@@ -223,6 +231,13 @@ export default function OnGoingBookingDetails({route}) {
               isDarkMode ? 'green-300' : 'green-500'
             }`}>
             Current Longitude: {currentLocation.longitude}
+          </Text>
+        </View>
+      ) : (
+        <View style={tw`mt-5`}>
+          <Text
+            style={tw`text-base text-${isDarkMode ? 'red-500' : 'red-500'}`}>
+            Location is not available
           </Text>
         </View>
       )}

@@ -110,8 +110,8 @@ const AgentInfoPage = () => {
   return (
     <KeyboardAvoidingView
       behavior="padding"
-      style={tw`flex-1 items-center justify-center bg-gray-300  pl-3 pr-3`}>
-      <ScrollView contentContainerStyle={tw`items-center`}>
+      style={tw`flex-1 items-center justify-center bg-gray-200 `}>
+      <ScrollView contentContainerStyle={tw`items-center ml-4 mr-4`}>
         <Text style={tw`text-2xl text-gray-800 mb-5 mt-12`}>Agent Information</Text>
 
         {/* Full Name */}
