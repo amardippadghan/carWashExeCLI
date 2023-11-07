@@ -96,7 +96,7 @@ const HistoryPage = () => {
   };
 
   return (
-    <View style={tw`flex-1 p-4 bg-${isDarkMode ? 'gray-800' : 'gray-300'}`}>
+    <View style={tw`flex-1 p-4 bg-${isDarkMode ? 'gray-800' : 'gray-200'}`}>
       <View style={tw`flex-row items-center space-x-2 pb-2`}>
         <View
           style={tw`flex-row space-x-2 flex-1 border border-gray-400 rounded-md ${

@@ -101,7 +101,7 @@ const Ongoing = () => {
   };
 
   return (
-    <View style={tw`flex-1 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-300'} p-4`}>
+    <View style={tw`flex-1 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} p-4`}>
      <View style={tw`flex-row items-center space-x-2 pb-2`}>
      <View style={tw`flex-row space-x-2 flex-1 border border-gray-400 rounded-md ${isDarkMode ? 'bg-gray-700' : 'bg-white'}`}>
        <Icon style={tw`mr-2 pt-3 ml-2`} name="search" color="gray" size={20} />
@@ -129,7 +129,7 @@ const Ongoing = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
           }>
-          <View style={tw`mb-4 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-300'}`}>
+          <View style={tw`mb-4 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'}`}>
             {filteredBookings.length === 0 ? (
               <View style={tw`flex-1 items-center justify-center`}>
               <FontAwesome5 name="exclamation-circle" size={35} color="#00CCBB" />

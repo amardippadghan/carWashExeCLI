@@ -120,7 +120,7 @@ export default function OnGoingBookingDetails({route}) {
 
   return (
     <View
-      style={[tw`flex-1 p-4 pt-10 `, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300 `]}>
+      style={[tw`flex-1 p-4 pt-10 `, isDarkMode ? tw`bg-gray-800` : tw`bg-gray-200 `]}>
       <TouchableOpacity
         style={[
           tw`w-15 h-15 mb-3 rounded-2xl items-center justify-center self-end`,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Image,
@@ -6,173 +6,117 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-
-} from "react-native";
-import { Button, Icon } from "react-native-elements";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+  useColorScheme,
+} from 'react-native';
+import {Button, Icon} from 'react-native-elements';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import tw from 'twrnc';
 
 const ProfilePage = () => {
   const navigation = useNavigation();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
+  const textColor = isDarkMode ? 'text-white' : 'text-black';
+
   const [profileData, setProfileData] = useState({
-    fullName: "",
-    email: "",
-    contactNumber: "",
-    dateOfBirth: "",
-    address: "",
+    fullName: '',
+    email: '',
+    contactNumber: '',
+    dateOfBirth: '',
+    address: '',
   });
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         // Retrieve the user ID from AsyncStorage
-        const userId = await AsyncStorage.getItem("userId");
+        const userId = await AsyncStorage.getItem('userId');
 
         if (userId) {
           // Make an API request using the retrieved user ID
           const response = await axios.get(
-            `https://car-wash-backend-api.onrender.com/api/agents/${userId}`
+            `https://car-wash-backend-api.onrender.com/api/agents/${userId}`,
           );
 
           setProfileData(response.data);
         } else {
-          console.log("User ID not found in AsyncStorage");
+          console.log('User ID not found in AsyncStorage');
           // Handle the case when the user ID is not found in AsyncStorage
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       }
     };
 
     fetchUserData();
   }, []);
+
   const handleEdit = () => {
-    navigation.navigate("editProfile" , {profileData : profileData});
-  } 
+    navigation.navigate('editProfile', {profileData: profileData});
+  };
   const handleLogout = async () => {
     // Clear the user ID from AsyncStorage
-    await AsyncStorage.removeItem("userId");
+    await AsyncStorage.removeItem('userId');
 
     // Navigate to the login screen
-    navigation.navigate("Login");
+    navigation.navigate('Login');
   };
 
   // Data for the agent information table
   const agentInfoData = [
-    { label: "Full Name", value: profileData.fullName },
-    { label: "Email", value: profileData.email },
-    { label: "Contact ", value: profileData.contactNumber },
-    { label: "Date of Birth", value: profileData.dateOfBirth },
-    { label: "Address", value: profileData.address },
+    {label: 'Full Name', value: profileData.fullName},
+    {label: 'Email', value: profileData.email},
+    {label: 'Contact', value: profileData.contactNumber},
+    {label: 'Date of Birth', value: profileData.dateOfBirth},
+    {label: 'Address', value: profileData.address},
   ];
 
   // Function to render each row in the table
-  const renderAgentInfoItem = ({ item }) => (
-    <View style={styles.tableRow}>
-      <Text style={styles.tableLabel}>{item.label}</Text>
-      <Text style={styles.tableValue}>{item.value}</Text>
+  const renderAgentInfoItem = ({item}) => (
+    <View style={tw`flex-row justify-between items-center mb-4`}>
+      <Text style={tw`text-lg font-bold w-40 text-black`}>{item.label}</Text>
+      <Text style={tw`text-lg w-60 text-black`}>{item.value}</Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Profile</Text>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+    <View
+      style={tw`flex-1 items-center ${
+        isDarkMode ? 'bg-gray-800' : 'bg-gray-200'
+      } pt-5`}>
+      <View style={tw`flex-row justify-between items-center w-full px-8 mb-5`}>
+        <Text style={tw`text-2xl font-bold ${textColor}`}>Profile</Text>
+        <TouchableOpacity
+          onPress={handleLogout}
+          style={tw`bg-yellow-300 py-1 px-3 rounded-lg`}>
+          <Text style={tw`text-lg text-black`}>Logout</Text>
         </TouchableOpacity>
       </View>
       <Image
-        source={{ uri: "https://picsum.photos/200" }}
-        style={styles.profileImage}
+        source={{uri: 'https://picsum.photos/200'}}
+        style={tw`w-52 h-52 rounded-full`}
       />
-      <Text style={styles.nameText}>{profileData.fullName}</Text>
-      <View style={styles.tableContainer}>
+      <Text style={tw`text-2xl font-bold mt-3 ${textColor}`}>
+        {profileData.fullName}
+      </Text>
+      <View
+        style={tw`w-5/6 bg-white p-5 w-96 rounded-lg mt-5 ml-5 mr-5 shadow-2xl`}>
         <FlatList
           data={agentInfoData}
-          keyExtractor={(item) => item.label}
+          keyExtractor={item => item.label}
           renderItem={renderAgentInfoItem}
-          style={styles.table}
         />
       </View>
-      <Button title="Edit Profile" onPress={handleEdit} />
+      <TouchableOpacity
+        onPress={handleEdit}
+        style={tw`bg-blue-300 py-2 px-6 rounded-lg mt-5`}>
+        <Text style={tw`text-lg text-black`}>Edit</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: "#D8D8D8",
-    paddingTop: 20,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  logoutButton: {
-    backgroundColor: "#FFD369",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-  logoutButtonText: {
-    fontSize: 16,
-    color: "#000000",
-  },
-  profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-  },
-  nameText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginTop: 10,
-    color: "#111",
-  },
-  tableContainer: {
-    width: "90%",
-    backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-  },
-  tableRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  tableLabel: {
-    fontSize: 16,
-    fontWeight: "bold",
-    width: "40%",
-    color: "#333",
-  },
-  tableValue: {
-    fontSize: 16,
-    width: "60%",
-    color: "#666",
-  },
-});
 
 export default ProfilePage;

@@ -27,7 +27,7 @@ export default function Login() {
      flex: 1,
      alignItems: 'center',
      justifyContent: 'center',
-     backgroundColor: isDarkMode ? '#1F2937' : '#D8D8D8',
+     backgroundColor: isDarkMode ? '#1F2937' : '#E5E7EB',
      paddingTop: 60,
    },
    content: {
@@ -208,7 +208,10 @@ export default function Login() {
            <Text style={styles.verificationStatus}>{verificationStatus}</Text>
          ) : null}
        </ScrollView>
-       <StatusBar backgroundColor="#1F2937" barStyle={'light-content'} />
+       <StatusBar
+         backgroundColor={isDarkMode ? '#1F2937' : '#E5E7EB'}
+         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+       />
      </KeyboardAvoidingView>
    );
 }
