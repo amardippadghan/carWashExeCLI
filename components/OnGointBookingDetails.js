@@ -72,7 +72,8 @@ export default function OnGoingBookingDetails({route}) {
             position => {
               const {latitude, longitude} = position.coords;
               setCurrentLocation({latitude, longitude});
-              console.log(currentLocation);
+              console.log(latitude);
+              console.log(longitude)
               patchLocation({latitude, longitude});
             },
             error => {
@@ -81,8 +82,9 @@ export default function OnGoingBookingDetails({route}) {
             {enableHighAccuracy: true}, // Adjust the timeout to 4 minutes (240000 milliseconds)
           );
         }
-      }, 180000); // Set interval to 3 minutes (180000 milliseconds)
+      }, 10000); // Set interval to 10 seconds (10000 milliseconds)
     };
+
 
     const patchLocation = ({latitude, longitude}) => {
       const patchData = {
