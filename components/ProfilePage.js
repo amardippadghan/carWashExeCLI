@@ -28,6 +28,14 @@ const ProfilePage = () => {
     dateOfBirth: '',
     address: '',
   });
+ const clearAllAsyncStorage = async () => {
+   try {
+     await AsyncStorage.clear();
+     console.log('AsyncStorage has been cleared successfully.');
+   } catch (error) {
+     console.error('Error clearing AsyncStorage:', error);
+   }
+ };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -114,6 +122,11 @@ const ProfilePage = () => {
         onPress={handleEdit}
         style={tw`bg-blue-300 py-2 px-6 rounded-lg mt-5`}>
         <Text style={tw`text-lg text-black`}>Edit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={clearAllAsyncStorage}
+        style={tw`bg-blue-300 py-2 px-6 rounded-lg mt-5`}>
+        <Text style={tw`text-lg text-black`}>clearAllAsyncStorage</Text>
       </TouchableOpacity>
     </View>
   );

@@ -143,9 +143,9 @@ const HomePage = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={tw`flex-row items-center space-x-2 pb-2`}>
+      <View style={tw`flex-row items-center  pb-2`}>
         <View
-          style={tw`flex-row space-x-2 flex-1 border border-gray-400 rounded-md ${
+          style={tw`flex-row  flex-1 border border-gray-400 rounded-md ${
             isDarkMode ? 'bg-gray-700' : 'bg-white'
           }`}>
           <Icon

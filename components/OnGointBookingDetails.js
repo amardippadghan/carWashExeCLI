@@ -10,6 +10,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {PERMISSIONS, request, check} from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import tw from 'twrnc';
 
@@ -26,25 +27,45 @@ export default function OnGoingBookingDetails({route}) {
     const phoneNumber = bookingDetails.clientContact;
     Linking.openURL(`tel:+91${phoneNumber}`);
   };
-
-  const patchBookingStatus = async status => {
-    try {
-      const response = await axios.patch(
-        `https://car-wash-backend-api.onrender.com/api/bookings/${bookingDetails._id}`,
-        {status},
-      );
-
-      setBookingDetails(response.data);
-
-      Alert.alert(
-        status === 'PickUp'
-          ? 'Great, Status updated to Car is Pickup Now'
-          : 'Great Job, Task completed',
-      );
-    } catch (error) {
-      console.error('Error updating booking status:', error);
+const patchBookingStatus = async status => {
+  try {
+    if (status === 'PickUp') {
+      const storedLocationId = await AsyncStorage.getItem('locationId');
+      if (storedLocationId) {
+        Alert.alert(
+          'Location ID already exists',
+          'Please clear the location ID before picking up again',
+        );
+        return;
+      } else {
+        // Assuming bookingDetails.locationId is the new location ID
+        await AsyncStorage.setItem('locationId', bookingDetails.locationId);
+      }
+    } else if (status === 'Delivered') {
+      const storedLocationId = await AsyncStorage.getItem('locationId');
+      if (storedLocationId) {
+        await AsyncStorage.removeItem('locationId');
+      }
     }
-  };
+
+    const response = await axios.patch(
+      `https://car-wash-backend-api.onrender.com/api/bookings/${bookingDetails._id}`,
+      {status},
+    );
+
+    setBookingDetails(response.data);
+
+    Alert.alert(
+      status === 'PickUp'
+        ? 'Great, Status updated to Car is Pickup Now'
+        : 'Great Job, Task completed',
+    );
+  } catch (error) {
+    console.error('Error updating booking status:', error);
+  }
+};
+
+
 
   useEffect(() => {
     let isFetchingLocation = false;
