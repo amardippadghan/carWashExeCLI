@@ -9,7 +9,7 @@ import {
   ScrollView,
   Alert,
   Platform,
-
+  useColorScheme,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -17,6 +17,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import tw from 'twrnc';
 
 const AgentInfoPage = () => {
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -108,15 +110,28 @@ const AgentInfoPage = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      style={tw`flex-1 items-center justify-center bg-gray-200 `}>
-      <ScrollView contentContainerStyle={tw`items-center ml-4 mr-4`}>
-        <Text style={tw`text-2xl text-gray-800 mb-5 mt-12`}>Agent Information</Text>
+    <View
+     
+      style={[
+        tw`flex-1 items-center justify-center`,
+        isDarkMode ? tw`bg-gray-800` : tw`bg-gray-200 `,
+      ]}>
+      <ScrollView contentContainerStyle={tw`items-center`}>
+        <Text
+          style={tw`text-2xl ${
+            isDarkMode ? 'text-white' : 'text-gray-800'
+          } mb-5 mt-12`}>
+          Agent Information
+        </Text>
 
         {/* Full Name */}
         <View style={tw`w-96 mb-4`}>
-          <Text style={tw`text-base text-black mb-1`}>Full Name</Text>
+          <Text
+            style={tw`text-base ${
+              isDarkMode ? 'text-white' : 'text-gray-800'
+            } mb-1`}>
+            Full Name
+          </Text>
           <TextInput
             style={tw`w-full h-12 bg-white rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your full name"
@@ -128,7 +143,12 @@ const AgentInfoPage = () => {
 
         {/* Email */}
         <View style={tw`w-96 mb-4`}>
-          <Text style={tw`text-base text-black mb-1`}>Email</Text>
+          <Text
+            style={tw`text-base ${
+              isDarkMode ? 'text-white' : 'text-gray-800'
+            } mb-1`}>
+            Email
+          </Text>
           <TextInput
             style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your email"
@@ -141,7 +161,12 @@ const AgentInfoPage = () => {
 
         {/* Contact Number */}
         <View style={tw`w-96 mb-4`}>
-          <Text style={tw`text-base text-black mb-1`}>Contact Number</Text>
+          <Text
+            style={tw`text-base ${
+              isDarkMode ? 'text-white' : 'text-gray-800'
+            } mb-1`}>
+            Contact Number
+          </Text>
           <TextInput
             style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your contact number"
@@ -155,7 +180,12 @@ const AgentInfoPage = () => {
         {/* Date of Birth */}
         <View style={tw`w-96 mb-4`}>
           <View style={tw`w-96 mb-4`}>
-            <Text style={tw`text-base text-black mb-1`}>Date of Birth</Text>
+            <Text
+              style={tw`text-base ${
+                isDarkMode ? 'text-white' : 'text-gray-800'
+              } mb-1`}>
+              Date of Birth
+            </Text>
             <TouchableOpacity
               onPress={showDatepicker}
               style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow justify-center`}>
@@ -178,7 +208,12 @@ const AgentInfoPage = () => {
 
         {/* Address */}
         <View style={tw`w-96 mb-4`}>
-          <Text style={tw`text-base text-black mb-1`}>Address</Text>
+          <Text
+            style={tw`text-base ${
+              isDarkMode ? 'text-white' : 'text-gray-800'
+            } mb-1`}>
+            Address
+          </Text>
           <TextInput
             style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your address"
@@ -190,12 +225,17 @@ const AgentInfoPage = () => {
 
         {/* Password */}
         <View style={tw`w-96 mb-4`}>
-          <Text style={tw`text-base text-black mb-1`}>Password</Text>
+          <Text
+            style={tw`text-base ${
+              isDarkMode ? 'text-white' : 'text-gray-800'
+            } mb-1`}>
+            Password
+          </Text>
           <TextInput
             style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Enter your password"
             secureTextEntry={true}
-            placeholderTextColor='#000'
+            placeholderTextColor="#000"
             value={password}
             onChangeText={text => setPassword(text)}
           />
@@ -203,12 +243,17 @@ const AgentInfoPage = () => {
 
         {/* Confirm Password */}
         <View style={tw`w-96 mb-4`}>
-          <Text style={tw`text-base text-black mb-1`}>Confirm Password</Text>
+          <Text
+            style={tw`text-base ${
+              isDarkMode ? 'text-white' : 'text-gray-800'
+            } mb-1`}>
+            Confirm Password
+          </Text>
           <TextInput
             style={tw`w-full h-12 bg-white  rounded-lg border border-gray-500 shadow px-3 text-lg text-black`}
             placeholder="Confirm your password"
             secureTextEntry={true}
-            placeholderTextColor='#000'
+            placeholderTextColor="#000"
             value={confirmPassword}
             onChangeText={text => setConfirmPassword(text)}
           />
@@ -216,15 +261,18 @@ const AgentInfoPage = () => {
 
         {/* Save Button */}
         <TouchableOpacity
-          style={tw`w-96 h-12 items-center justify-center  rounded-lg bg-gray-700 mt-6 mb-3`}
+          style={tw`w-96 h-12 items-center justify-center  rounded-lg ${
+            isDarkMode ? 'bg-gray-200' : 'bg-gray-800'
+          } mt-6 mb-6`}
           onPress={handleSave}
           disabled={isSaving}>
-          <Text style={tw`text-lg text-white`}>
+          <Text
+            style={tw`text-lg ${isDarkMode ? 'text-black' : 'text-white'}`}>
             {isSaving ? 'Saving...' : 'Save'}
           </Text>
         </TouchableOpacity>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 
 };

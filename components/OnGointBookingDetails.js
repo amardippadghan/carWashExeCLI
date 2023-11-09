@@ -103,7 +103,7 @@ const patchBookingStatus = async status => {
             {enableHighAccuracy: true}, // Adjust the timeout to 4 minutes (240000 milliseconds)
           );
         }
-      }, 10000); // Set interval to 10 seconds (10000 milliseconds)
+      }, 30000); // Set interval to 10 seconds (10000 milliseconds)
     };
 
 
@@ -150,7 +150,7 @@ const patchBookingStatus = async status => {
     <View
       style={[
         tw`flex-1 p-4 pt-10 `,
-        isDarkMode ? tw`bg-gray-800` : tw`bg-gray-300 `,
+        isDarkMode ? tw`bg-gray-800` : tw`bg-gray-200 `,
       ]}>
       <TouchableOpacity
         style={[

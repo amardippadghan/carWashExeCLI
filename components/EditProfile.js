@@ -8,12 +8,68 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  useColorScheme
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EditProfile({ route }) {
+   const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      paddingTop: 40,
+      backgroundColor: isDarkMode ? '#1F2937' : '#E5E7EB',
+    },
+    inputContainer: {
+      marginBottom: 20,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      marginBottom: 5,
+      marginLeft: 6,
+      color: isDarkMode ? '#FFFFFF' : '#000',
+    },
+    input: {
+      height: 40,
+      width: 300,
+      borderWidth: 1,
+      borderColor: '#000',
+      borderRadius: 10,
+      color: '#000',
+      paddingLeft: 10,
+      fontSize: 16,
+      justifyContent: 'center',
+      backgroundColor: '#FFFFFF',
+    },
+    datePickerText: {
+      height: 40,
+      paddingTop: 10,
+      width: 300,
+      borderWidth: 1,
+      borderColor: '#000',
+      color: '#000',
+      borderRadius: 5,
+      paddingLeft: 10,
+      fontSize: 16,
+      backgroundColor: '#FFFFFF',
+    },
+    updateButton: {
+      backgroundColor: '#FFD369',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 5,
+    },
+    updateButtonText: {
+      fontSize: 18,
+      color: '#000000',
+      fontWeight: 'bold',
+    },
+  });
   const { profileData } = route.params;
   const [fullName, setFullName] = useState(profileData.fullName);
   const [email, setEmail] = useState(profileData.email);
@@ -68,7 +124,7 @@ export default function EditProfile({ route }) {
 
       if (response.status === 200) {
         Alert.alert('Profile Updated', 'Your profile has been updated.');
-        navigation.navigate('Profile');
+        navigation.navigate('ProfilePage');
       } else {
         Alert.alert('Update Failed', 'Failed to update your profile. Please try again.');
       }
@@ -130,18 +186,16 @@ export default function EditProfile({ route }) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Date of Birth</Text>
+        <Text style={styles.label}>Date Of Birth</Text>
+
         <TouchableOpacity onPress={showDatepicker}>
-          <Text style={styles.datePickerText}>
-            {formatDate(dateOfBirth)}
-          </Text>
+          <Text style={styles.datePickerText}>{formatDate(dateOfBirth)}</Text>
         </TouchableOpacity>
         {showDatePicker && (
           <DateTimePicker
             testID="dateTimePicker"
             value={dateOfBirth}
             mode="date"
-            placeholderTextColor="#000"
             is24Hour={true}
             display="default"
             onChange={handleDateChange}
@@ -168,53 +222,4 @@ export default function EditProfile({ route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#D8D8D8',
-    paddingTop: 20,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#000',
-  },
-  input: {
-    height: 40,
-    width: 300,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 5,
-    color: '#000',
-    paddingLeft: 10,
-    fontSize: 16,
-    backgroundColor: '#FFFFFF',
-  },
-  datePickerText: {
-    height: 40,
-    paddingTop: 10,
-    width: 300,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 5,
-    paddingLeft: 10,
-    fontSize: 16,
-    backgroundColor: '#FFFFFF',
-  },
-  updateButton: {
-    backgroundColor: '#FFD369',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  updateButtonText: {
-    fontSize: 18,
-    color: '#000000',
-    fontWeight: 'bold',
-  },
-});
+

@@ -12,10 +12,13 @@ const ViewMorePage = ({route}) => {
   const renderRow = ({item}) => (
     <View style={tw`flex-row justify-between mb-4`}>
       <Text
-        style={[tw`text-lg font-bold`, {color: isDarkMode ? '#fff' : '#000'}]}>
+        style={[
+          tw`text-lg font-bold`,
+          {color: isDarkMode ? '#E5E7EB' : '#000'},
+        ]}>
         {item.label}
       </Text>
-      <Text style={[tw`text-lg`, {color: isDarkMode ? '#fff' : '#000'}]}>
+      <Text style={[tw`text-lg`, {color: isDarkMode ? '#E5E7EB' : '#000'}]}>
         {item.value}
       </Text>
     </View>
@@ -36,8 +39,8 @@ const ViewMorePage = ({route}) => {
 
   return (
     <View
-      style={tw`flex-1 justify-center items-center ${
-        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      style={tw`flex-1 justify-center  items-center ${
+        isDarkMode ? 'bg-gray-800' : 'bg-gray-200'
       }`}>
       <View
         style={tw`w-full p-6 mb-16 rounded-xl shadow-md ${

@@ -68,7 +68,7 @@ const App = () => {
             { enableHighAccuracy: true }
           );
         }
-      }, 100000);
+      }, 120000);
 
       return () => {
         console.log("Clearing location interval.");
@@ -121,7 +121,7 @@ const App = () => {
         );
 
        if (response.status === 200) {
-          console.log("Successfully patched");
+          console.log("Successfully patched" , response.data);
           const message = `Latitude: ${latitude}\nLongitude: ${longitude}\nSuccessfully patched`;
           Alert.alert("Success", message); // Display an alert with the success message
         }
@@ -149,7 +149,11 @@ const App = () => {
 
           }
         } component={ViewMorePage} />
-        <Stack.Screen name="editProfile" component={EditProfile} />
+        <Stack.Screen name="editProfile" options={
+          {
+            headerShown: false
+          }
+        } component={EditProfile} />
         <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage} />
       </Stack.Navigator>
     </NavigationContainer>
