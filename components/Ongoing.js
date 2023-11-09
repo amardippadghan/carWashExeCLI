@@ -51,12 +51,44 @@ const Ongoing = () => {
     navigation.navigate('ongoingbooking', {booking});
   };
 
-  const filteredBookings = bookings.filter(
-    booking =>
-      (booking.servicesName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        booking.date.includes(searchQuery)) &&
-      (booking.status === 'WorkOnIt' || booking.status === 'PickUp'),
-  );
+  const filteredBookings = bookings
+    .filter(booking => {
+      return (
+        (booking.servicesName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+          booking.date.includes(searchQuery)) &&
+        (booking.status === 'WorkOnIt' || booking.status === 'PickUp')
+      );
+    })
+    .sort((a, b) => {
+      const datePartsA = a.date.split('-');
+      const timePartsA = a.time.split(' ');
+      const dateA = new Date(
+        parseInt(datePartsA[2]),
+        parseInt(datePartsA[1]) - 1,
+        parseInt(datePartsA[0]),
+        timePartsA[1].includes('AM')
+          ? parseInt(timePartsA[0].split(':')[0])
+          : parseInt(timePartsA[0].split(':')[0]) + 12,
+        parseInt(timePartsA[0].split(':')[1]),
+      ).getTime();
+
+      const datePartsB = b.date.split('-');
+      const timePartsB = b.time.split(' ');
+      const dateB = new Date(
+        parseInt(datePartsB[2]),
+        parseInt(datePartsB[1]) - 1,
+        parseInt(datePartsB[0]),
+        timePartsB[1].includes('AM')
+          ? parseInt(timePartsB[0].split(':')[0])
+          : parseInt(timePartsB[0].split(':')[0]) + 12,
+        parseInt(timePartsB[0].split(':')[1]),
+      ).getTime();
+
+      return dateB - dateA;
+    });
+
 
   const renderBookingCard = booking => {
     const handleViewMore = () => {

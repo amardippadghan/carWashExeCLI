@@ -47,12 +47,45 @@ const HistoryPage = () => {
     }
   };
 
-  const filteredBookings = bookings.filter(
-    booking =>
-      (booking.servicesName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        booking.date.includes(searchQuery)) &&
-      booking.status === 'Delivered',
-  );
+ const filteredBookings = bookings
+   .filter(
+     booking =>
+       booking.status === 'Delivered' &&
+       (booking.servicesName
+         .toLowerCase()
+         .includes(searchQuery.toLowerCase()) ||
+         booking.date.includes(searchQuery)),
+   )
+   .sort((a, b) => {
+     const datePartsA = a.date.split('-');
+     const datePartsB = b.date.split('-');
+
+     const timePartsA = a.time.split(' ');
+     const timePartsB = b.time.split(' ');
+
+     const dateA = new Date(
+       parseInt(datePartsA[2]),
+       parseInt(datePartsA[1]) - 1,
+       parseInt(datePartsA[0]),
+       timePartsA[1].toLowerCase() === 'am'
+         ? parseInt(timePartsA[0].split(':')[0])
+         : parseInt(timePartsA[0].split(':')[0]) + 12,
+       parseInt(timePartsA[0].split(':')[1]),
+     ).getTime();
+
+     const dateB = new Date(
+       parseInt(datePartsB[2]),
+       parseInt(datePartsB[1]) - 1,
+       parseInt(datePartsB[0]),
+       timePartsB[1].toLowerCase() === 'am'
+         ? parseInt(timePartsB[0].split(':')[0])
+         : parseInt(timePartsB[0].split(':')[0]) + 12,
+       parseInt(timePartsB[0].split(':')[1]),
+     ).getTime();
+
+     return dateB - dateA;
+   });
+
 
   const renderBookingCard = booking => {
       const handleViewMore = () => {

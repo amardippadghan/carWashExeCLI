@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
-  useColorScheme
+  useColorScheme, ScrollView
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
@@ -146,79 +146,81 @@ export default function EditProfile({ route }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Full Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Edit your name"
-          placeholderTextColor="#000"
-          value={fullName}
-          onChangeText={text => setFullName(text)}
-          keyboardType="text"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Edit your email"
-          placeholderTextColor="#000"
-          value={email}
-          onChangeText={text => setEmail(text)}
-          keyboardType="email-address"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Contact Number</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Edit your contact number"
-          placeholderTextColor="#000"
-          value={contactNumber}
-          onChangeText={text => setContactNumber(text)}
-          keyboardType="numeric"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Date Of Birth</Text>
-
-        <TouchableOpacity onPress={showDatepicker}>
-          <Text style={styles.datePickerText}>{formatDate(dateOfBirth)}</Text>
-        </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={dateOfBirth}
-            mode="date"
-            is24Hour={true}
-            display="default"
-            onChange={handleDateChange}
+    <View style={{flex: 1}}>
+      <ScrollView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        contentContainerStyle={styles.container}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Edit your name"
+            placeholderTextColor="#000"
+            value={fullName}
+            onChangeText={text => setFullName(text)}
+            keyboardType="text"
           />
-        )}
-      </View>
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Edit your address"
-          placeholderTextColor="#000"
-          value={address}
-          onChangeText={text => setAddress(text)}
-          keyboardType="text"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Edit your email"
+            placeholderTextColor="#000"
+            value={email}
+            onChangeText={text => setEmail(text)}
+            keyboardType="email-address"
+          />
+        </View>
 
-      <TouchableOpacity style={styles.updateButton} onPress={confirmUpdate}>
-        <Text style={styles.updateButtonText}>Update Profile</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Contact Number</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Edit your contact number"
+            placeholderTextColor="#000"
+            value={contactNumber}
+            onChangeText={text => setContactNumber(text)}
+            keyboardType="numeric"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Date Of Birth</Text>
+
+          <TouchableOpacity onPress={showDatepicker}>
+            <Text style={styles.datePickerText}>{formatDate(dateOfBirth)}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={dateOfBirth}
+              mode="date"
+              is24Hour={true}
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Address</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Edit your address"
+            placeholderTextColor="#000"
+            value={address}
+            onChangeText={text => setAddress(text)}
+            keyboardType="text"
+          />
+        </View>
+
+        <TouchableOpacity style={styles.updateButton} onPress={confirmUpdate}>
+          <Text style={styles.updateButtonText}>Update Profile</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </View>
   );
 }
 

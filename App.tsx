@@ -21,12 +21,15 @@ const Stack = createStackNavigator();
 
 const App = () => {
     const [isIntervalStarted, setIsIntervalStarted] = useState(false);
+   
 
   useEffect(() => {
     console.log("Starting use effect");
     const checkLocationPermission = async () => {
       try {
         const status = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+         
+        
         console.log("Location permission status:", status);
         if (status === 'granted' && !isIntervalStarted) {
           startLocationInterval();
