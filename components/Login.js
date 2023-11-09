@@ -8,19 +8,49 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   useColorScheme, 
-  StatusBar
+  StatusBar, 
+  BackHandler , 
+  Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
 
+import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
  
 
 
 export default function Login() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+   useEffect(() => {
+     LocationServicesDialogBox.checkLocationServicesIsEnabled({
+       message:
+         '<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>',
+       ok: 'YES',
+       cancel: 'NO',
+       enableHighAccuracy: true,
+     })
+       .then(function (success) {
+         console.log(success); // success => "enabled"
+       })
+       .catch(error => {
+         console.log(error.message); // error.message => "disabled"
+         Alert.alert(
+           'Location Services Required',
+           'Please enable location services for the app to function properly.',
+           [
+             {
+               text: 'OK',
+               onPress: () => BackHandler.exitApp(),
+             },
+           ],
+           {cancelable: false},
+         );
+       });
+   }, []);
+
   
  const styles = StyleSheet.create({
    container: {

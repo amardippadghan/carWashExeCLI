@@ -6262,6 +6262,11 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-android-location-services-dialog-box@^2.8.2:
+  version "2.8.2"
+  resolved "https://registry.npmjs.org/react-native-android-location-services-dialog-box/-/react-native-android-location-services-dialog-box-2.8.2.tgz"
+  integrity sha512-zBTi0xJQoF6GdImRhXOCXezYuALlPgbctqG3eOrZu63hdrlvTBhqATkb6DB5JM9kpcMbX1skMIOI3m71zKGsPA==
+
 react-native-bootstrap-styles@^4.5.0-r:
   version "4.5.0-r"
   resolved "https://registry.npmjs.org/react-native-bootstrap-styles/-/react-native-bootstrap-styles-4.5.0-r.tgz"
@@ -6401,7 +6406,7 @@ react-native-vector-icons@*, react-native-vector-icons@^10.0.1, "react-native-ve
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", "react-native@>= 0.64.3", react-native@>=0.33, react-native@>=0.57, react-native@>=0.58.4, react-native@>=0.59, react-native@>=0.63.0, react-native@>=0.63.3, react-native@0.72.5:
+react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", "react-native@>= 0.56.0", "react-native@>= 0.64.3", react-native@>=0.33, react-native@>=0.57, react-native@>=0.58.4, react-native@>=0.59, react-native@>=0.63.0, react-native@>=0.63.3, react-native@0.72.5:
   version "0.72.5"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.72.5.tgz"
   integrity sha512-oIewslu5DBwOmo7x5rdzZlZXCqDIna0R4dUwVpfmVteORYLr4yaZo5wQnMeR+H7x54GaMhmgeqp0ZpULtulJFg==

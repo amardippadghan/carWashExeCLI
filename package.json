@@ -24,6 +24,7 @@
     "react": "18.2.0",
     "react-datetime-picker": "^5.5.1",
     "react-native": "0.72.5",
+    "react-native-android-location-services-dialog-box": "^2.8.2",
     "react-native-bootstrap-styles": "^4.5.0-r",
     "react-native-elements": "^3.4.3",
     "react-native-geolocation-service": "^5.3.1",
