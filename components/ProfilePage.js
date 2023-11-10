@@ -7,22 +7,20 @@ import {
   StyleSheet,
   FlatList,
   useColorScheme,
-  ActivityIndicator
+  ActivityIndicator,
+  Button,
 } from 'react-native';
-import {Button, Icon} from 'react-native-elements';
-import {useNavigation} from '@react-navigation/native';
+import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'twrnc';
 
 const ProfilePage = () => {
-  const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
   const textColor = isDarkMode ? 'text-white' : 'text-black';
-  const [Loading , setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState({
     fullName: '',
     email: '',
@@ -30,24 +28,16 @@ const ProfilePage = () => {
     dateOfBirth: '',
     address: '',
   });
-//  const clearAllAsyncStorage = async () => {
-//    try {
-//      await AsyncStorage.clear();
-//      console.log('AsyncStorage has been cleared successfully.');
-//    } catch (error) {
-//      console.error('Error clearing AsyncStorage:', error);
-//    }
-//  };
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Retrieve the user ID from AsyncStorage
         const userId = await AsyncStorage.getItem('userId');
 
         if (userId) {
-          // Make an API request using the retrieved user ID
-          setLoading(true)
+          setLoading(true);
+
           const response = await axios.get(
             `https://car-wash-backend-api.onrender.com/api/agents/${userId}`,
           );
@@ -55,13 +45,11 @@ const ProfilePage = () => {
           setProfileData(response.data);
         } else {
           console.log('User ID not found in AsyncStorage');
-          // Handle the case when the user ID is not found in AsyncStorage
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
-      }
-      finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -69,15 +57,39 @@ const ProfilePage = () => {
   }, []);
 
   const handleEdit = () => {
-    navigation.navigate('editProfile', {profileData: profileData});
+    // You can pass the selected image URI to the 'editProfile' screen if needed
+    navigation.navigate('editProfile', {
+      profileData: profileData,
+      selectedImage: selectedImage,
+    });
   };
-  const handleLogout = async () => {
-    // Clear the user ID from AsyncStorage
-    await AsyncStorage.removeItem('userId');
 
-    // Navigate to the login screen
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userId');
     navigation.navigate('Login');
   };
+
+  const openImagePicker = () => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+      } else {
+        let imageUri = response.uri || response.assets?.[0]?.uri;
+        setSelectedImage(imageUri);
+      }
+    });
+  };
+
+  
 
   // Data for the agent information table
   const agentInfoData = [
@@ -88,7 +100,6 @@ const ProfilePage = () => {
     {label: 'Address', value: profileData.address},
   ];
 
-  // Function to render each row in the table
   const renderAgentInfoItem = ({item}) => (
     <View style={tw`flex-row justify-between items-center mb-4`}>
       <Text style={tw`text-lg font-bold w-40 text-black`}>{item.label}</Text>
@@ -109,14 +120,28 @@ const ProfilePage = () => {
           <Text style={tw`text-lg text-black`}>Logout</Text>
         </TouchableOpacity>
       </View>
-      {Loading ? (
-        <ActivityIndicator size="large" color={isDarkMode ? 'white' : 'gray' }  style={{ marginTop: 20, marginBottom: 20 }} />
+
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color={isDarkMode ? 'white' : 'gray'}
+          style={{marginTop: 20, marginBottom: 20}}
+        />
       ) : (
         <>
-          <Image
-            source={{uri: 'https://picsum.photos/200'}}
-            style={tw`w-52 h-52 rounded-full`}
-          />
+          <TouchableOpacity onPress={openImagePicker}>
+            {selectedImage ? (
+              <Image
+                source={{uri: selectedImage}}
+                style={tw`w-52 h-52 rounded-full`}
+              />
+            ) : (
+              <Image
+                source={{uri: 'https://picsum.photos/200'}}
+                style={tw`w-52 h-52 rounded-full`}
+              />
+            )}
+          </TouchableOpacity>
           <Text style={tw`text-2xl font-bold mt-3 ${textColor}`}>
             {profileData.fullName}
           </Text>
@@ -135,7 +160,8 @@ const ProfilePage = () => {
           </TouchableOpacity>
         </>
       )}
-     
+
+      
     </View>
   );
 };
