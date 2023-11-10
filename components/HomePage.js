@@ -10,9 +10,11 @@ import {
   RefreshControl,
   Image,
   useColorScheme,
+  Alert , 
+  BackHandler
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {BackHandler} from 'react-native';
+
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'twrnc';

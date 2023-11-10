@@ -2,6 +2,7 @@ import * as React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+
 // Import your screen components
 import HomePage from './HomePage';
 import HistoryPage from './HistoryPage';
@@ -10,6 +11,8 @@ import OngoingPage from './Ongoing';
 const Tab = createMaterialBottomTabNavigator();
 
 const BottomTabNavigation = () => {
+
+
   return (
     <Tab.Navigator
       initialRouteName="HomePage"

@@ -17,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
 
 
+
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -82,24 +84,24 @@ const App = () => {
     checkLocationPermission();
   }, [isIntervalStarted]);
 
-  useEffect(() => {
-    const displayAsyncStorageItems = async () => {
-      try {
-        const allKeys = await AsyncStorage.getAllKeys();
-        const items = await AsyncStorage.multiGet(allKeys);
-        let alertMessage = "AsyncStorage Items:\n";
-        items.forEach(item => {
-          alertMessage += `${item[0]}: ${item[1]}\n`;
-        });
-        Alert.alert("AsyncStorage Items", alertMessage);
-        console.log(alertMessage)
-      } catch (error) {
-        console.error("Error retrieving AsyncStorage items:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const displayAsyncStorageItems = async () => {
+  //     try {
+  //       const allKeys = await AsyncStorage.getAllKeys();
+  //       const items = await AsyncStorage.multiGet(allKeys);
+  //       let alertMessage = "AsyncStorage Items:\n";
+  //       items.forEach(item => {
+  //         alertMessage += `${item[0]}: ${item[1]}\n`;
+  //       });
+  //       Alert.alert("AsyncStorage Items", alertMessage);
+  //       console.log(alertMessage)
+  //     } catch (error) {
+  //       console.error("Error retrieving AsyncStorage items:", error);
+  //     }
+  //   };
 
-    displayAsyncStorageItems();
-  }, []);
+  //   displayAsyncStorageItems();
+  // }, []);
 
   const patchLocation = async (latitude, longitude) => {
     try {
@@ -135,6 +137,7 @@ const App = () => {
       console.error("Error patching location:", error);
     }
   };
+  
 
   return (
     <NavigationContainer>

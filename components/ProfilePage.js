@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   useColorScheme,
+  ActivityIndicator
 } from 'react-native';
 import {Button, Icon} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
@@ -20,6 +21,7 @@ const ProfilePage = () => {
   const isDarkMode = colorScheme === 'dark';
 
   const textColor = isDarkMode ? 'text-white' : 'text-black';
+  const [Loading , setLoading] = useState(true);
 
   const [profileData, setProfileData] = useState({
     fullName: '',
@@ -28,14 +30,14 @@ const ProfilePage = () => {
     dateOfBirth: '',
     address: '',
   });
- const clearAllAsyncStorage = async () => {
-   try {
-     await AsyncStorage.clear();
-     console.log('AsyncStorage has been cleared successfully.');
-   } catch (error) {
-     console.error('Error clearing AsyncStorage:', error);
-   }
- };
+//  const clearAllAsyncStorage = async () => {
+//    try {
+//      await AsyncStorage.clear();
+//      console.log('AsyncStorage has been cleared successfully.');
+//    } catch (error) {
+//      console.error('Error clearing AsyncStorage:', error);
+//    }
+//  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -45,6 +47,7 @@ const ProfilePage = () => {
 
         if (userId) {
           // Make an API request using the retrieved user ID
+          setLoading(true)
           const response = await axios.get(
             `https://car-wash-backend-api.onrender.com/api/agents/${userId}`,
           );
@@ -56,6 +59,9 @@ const ProfilePage = () => {
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
+      }
+      finally{
+        setLoading(false)
       }
     };
 
@@ -103,31 +109,33 @@ const ProfilePage = () => {
           <Text style={tw`text-lg text-black`}>Logout</Text>
         </TouchableOpacity>
       </View>
-      <Image
-        source={{uri: 'https://picsum.photos/200'}}
-        style={tw`w-52 h-52 rounded-full`}
-      />
-      <Text style={tw`text-2xl font-bold mt-3 ${textColor}`}>
-        {profileData.fullName}
-      </Text>
-      <View
-        style={tw`w-5/6 bg-white p-5 w-96 rounded-lg mt-5 ml-5 mr-5 shadow-2xl`}>
-        <FlatList
-          data={agentInfoData}
-          keyExtractor={item => item.label}
-          renderItem={renderAgentInfoItem}
-        />
-      </View>
-      <TouchableOpacity
-        onPress={handleEdit}
-        style={tw`bg-blue-300 py-2 px-6 rounded-lg mt-5`}>
-        <Text style={tw`text-lg text-black`}>Edit</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={clearAllAsyncStorage}
-        style={tw`bg-blue-300 py-2 px-6 rounded-lg mt-5`}>
-        <Text style={tw`text-lg text-black`}>clearAllAsyncStorage</Text>
-      </TouchableOpacity>
+      {Loading ? (
+        <ActivityIndicator size="large" color={isDarkMode ? 'white' : 'gray' }  style={{ marginTop: 20, marginBottom: 20 }} />
+      ) : (
+        <>
+          <Image
+            source={{uri: 'https://picsum.photos/200'}}
+            style={tw`w-52 h-52 rounded-full`}
+          />
+          <Text style={tw`text-2xl font-bold mt-3 ${textColor}`}>
+            {profileData.fullName}
+          </Text>
+          <View
+            style={tw`w-5/6 bg-white p-5 w-96 rounded-lg mt-5 ml-5 mr-5 shadow-2xl`}>
+            <FlatList
+              data={agentInfoData}
+              keyExtractor={item => item.label}
+              renderItem={renderAgentInfoItem}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={handleEdit}
+            style={tw`bg-blue-300 py-2 px-6 rounded-lg mt-5`}>
+            <Text style={tw`text-lg text-black`}>Edit</Text>
+          </TouchableOpacity>
+        </>
+      )}
+     
     </View>
   );
 };

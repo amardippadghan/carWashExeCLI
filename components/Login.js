@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -9,47 +9,24 @@ import {
   ScrollView,
   useColorScheme, 
   StatusBar, 
-  BackHandler , 
+  BackHandler, 
   Alert
+
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
-
 import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
- 
+
+
+
 
 
 export default function Login() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-   useEffect(() => {
-     LocationServicesDialogBox.checkLocationServicesIsEnabled({
-       message:
-         '<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>',
-       ok: 'YES',
-       cancel: 'NO',
-       enableHighAccuracy: true,
-     })
-       .then(function (success) {
-         console.log(success); // success => "enabled"
-       })
-       .catch(error => {
-         console.log(error.message); // error.message => "disabled"
-         Alert.alert(
-           'Location Services Required',
-           'Please enable location services for the app to function properly.',
-           [
-             {
-               text: 'OK',
-               onPress: () => BackHandler.exitApp(),
-             },
-           ],
-           {cancelable: false},
-         );
-       });
-   }, []);
+  
 
   
  const styles = StyleSheet.create({
@@ -191,6 +168,45 @@ export default function Login() {
         console.error('Error checking AsyncStorage:', error);
       });
   }, []);
+    const checkLocationServices = useRef(() => {});
+
+    useEffect(() => {
+      const checkLocation = async () => {
+        try {
+          await LocationServicesDialogBox.checkLocationServicesIsEnabled({
+            message:
+              '<h2>Location Access Required</h2>This app requires access to your location to function properly. Please enable location services to continue using the app.<br/><br/>',
+            ok: 'YES',
+            cancel: 'NO',
+            enableHighAccuracy: true,
+          });
+        } catch (error) {
+          Alert.alert(
+            'Location Services Required',
+            'Please enable location services for the app to function properly.',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  checkLocationServices.current();
+                },
+              },
+              {
+                text: 'Cancel',
+                onPress: () => {
+                  BackHandler.exitApp();
+                },
+                style: 'cancel',
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+      };
+
+      checkLocationServices.current = checkLocation;
+      checkLocation();
+    }, []);
 
    return (
      <KeyboardAvoidingView
