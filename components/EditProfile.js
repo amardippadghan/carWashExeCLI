@@ -71,6 +71,9 @@ export default function EditProfile({ route }) {
     },
   });
   const { profileData } = route.params;
+  
+
+
   const [fullName, setFullName] = useState(profileData.fullName);
   const [email, setEmail] = useState(profileData.email);
   const [contactNumber, setContactNumber] = useState(profileData.contactNumber.toString());

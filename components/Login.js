@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect , useCallback} from 'react';
 import {
   View,
   Text,
@@ -27,8 +27,27 @@ export default function Login() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   
+  const checkLocationServices = useCallback(() => {
+    LocationServicesDialogBox.checkLocationServicesIsEnabled({
+      message:
+        "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/>",
+      ok: 'YES',
+      cancel: 'NO',
+      enableHighAccuracy: true,
+      showDialog: true,
+    })
+      .then(function (success) {
+        console.log(success);
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }, []);
 
-  
+  useEffect(() => {
+    checkLocationServices();
+  }, [checkLocationServices]);
+ 
  const styles = StyleSheet.create({
    container: {
      flex: 1,
@@ -168,45 +187,9 @@ export default function Login() {
         console.error('Error checking AsyncStorage:', error);
       });
   }, []);
-    const checkLocationServices = useRef(() => {});
+  
 
-    useEffect(() => {
-      const checkLocation = async () => {
-        try {
-          await LocationServicesDialogBox.checkLocationServicesIsEnabled({
-            message:
-              '<h2>Location Access Required</h2>This app requires access to your location to function properly. Please enable location services to continue using the app.<br/><br/>',
-            ok: 'YES',
-            cancel: 'NO',
-            enableHighAccuracy: true,
-          });
-        } catch (error) {
-          Alert.alert(
-            'Location Services Required',
-            'Please enable location services for the app to function properly.',
-            [
-              {
-                text: 'OK',
-                onPress: () => {
-                  checkLocationServices.current();
-                },
-              },
-              {
-                text: 'Cancel',
-                onPress: () => {
-                  BackHandler.exitApp();
-                },
-                style: 'cancel',
-              },
-            ],
-            {cancelable: false},
-          );
-        }
-      };
 
-      checkLocationServices.current = checkLocation;
-      checkLocation();
-    }, []);
 
    return (
      <KeyboardAvoidingView

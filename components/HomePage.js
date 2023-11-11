@@ -42,6 +42,7 @@ const HomePage = () => {
   const fetchData = async () => {
     setRefreshing(true);
     const userId = await AsyncStorage.getItem('userId');
+    console.log(userId)
     try {
       const response = await axios.get(
         `https://car-wash-backend-api.onrender.com/api/bookings/agentId/${userId}`,
@@ -125,7 +126,9 @@ const filteredBookings = bookings
   .filter(booking => {
     return (
       booking.status === 'Accepted' &&
-      (booking.servicesName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (booking.servicesName
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
         booking.date.includes(searchQuery))
     );
   })

@@ -55,7 +55,7 @@ const Ongoing = () => {
     .filter(booking => {
       return (
         (booking.servicesName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
           booking.date.includes(searchQuery)) &&
         (booking.status === 'WorkOnIt' || booking.status === 'PickUp')

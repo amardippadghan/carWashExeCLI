@@ -48,14 +48,15 @@ const HistoryPage = () => {
   };
 
  const filteredBookings = bookings
-   .filter(
-     booking =>
+   .filter(booking => {
+     return (
        booking.status === 'Delivered' &&
        (booking.servicesName
-         .toLowerCase()
+         ?.toLowerCase()
          .includes(searchQuery.toLowerCase()) ||
-         booking.date.includes(searchQuery)),
-   )
+         booking.date.includes(searchQuery))
+     );
+   })
    .sort((a, b) => {
      const datePartsA = a.date.split('-');
      const datePartsB = b.date.split('-');

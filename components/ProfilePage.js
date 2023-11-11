@@ -10,12 +10,14 @@ import {
   ActivityIndicator,
   Button,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'twrnc';
 
 const ProfilePage = () => {
+  const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
@@ -27,6 +29,7 @@ const ProfilePage = () => {
     contactNumber: '',
     dateOfBirth: '',
     address: '',
+    profilePic : '',
   });
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -43,6 +46,7 @@ const ProfilePage = () => {
           );
 
           setProfileData(response.data);
+          
         } else {
           console.log('User ID not found in AsyncStorage');
         }
@@ -57,10 +61,10 @@ const ProfilePage = () => {
   }, []);
 
   const handleEdit = () => {
-    // You can pass the selected image URI to the 'editProfile' screen if needed
+    
     navigation.navigate('editProfile', {
-      profileData: profileData,
-      selectedImage: selectedImage,
+      profileData: profileData
+     
     });
   };
 
@@ -69,26 +73,7 @@ const ProfilePage = () => {
     navigation.navigate('Login');
   };
 
-  const openImagePicker = () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
-    };
-
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('Image picker error: ', response.error);
-      } else {
-        let imageUri = response.uri || response.assets?.[0]?.uri;
-        setSelectedImage(imageUri);
-      }
-    });
-  };
-
+  
   
 
   // Data for the agent information table
@@ -129,15 +114,16 @@ const ProfilePage = () => {
         />
       ) : (
         <>
-          <TouchableOpacity onPress={openImagePicker}>
-            {selectedImage ? (
+        {console.log(profileData)}
+          <TouchableOpacity >
+             {profileData.profilePic ? (
               <Image
-                source={{uri: selectedImage}}
+                source={{ uri: profileData.profilePic }}
                 style={tw`w-52 h-52 rounded-full`}
               />
             ) : (
               <Image
-                source={{uri: 'https://picsum.photos/200'}}
+                source={{ uri: 'https://picsum.photos/200' }}
                 style={tw`w-52 h-52 rounded-full`}
               />
             )}
