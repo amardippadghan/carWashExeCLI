@@ -73,7 +73,7 @@ const App = () => {
             { enableHighAccuracy: true }
           );
         }
-      }, 120000);
+      }, 60000);
 
       return () => {
         console.log("Clearing location interval.");
