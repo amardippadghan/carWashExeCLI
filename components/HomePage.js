@@ -14,6 +14,8 @@ import {
   BackHandler
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import image from './Image/logo.jpg';
+
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -165,9 +167,10 @@ const filteredBookings = bookings
     <View style={tw`flex-1 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} p-4`}>
       <View style={tw`flex-row pb-3 items-center justify-between`}>
         <Image
-          source={{uri: 'https://icons8.com/icon/J0im2VMpg6mr/convertible'}}
+          source={image}
           style={tw`h-12 w-12 bg-gray-300 p-4 rounded-full`}
         />
+
         <View style={tw`flex-row items-center`}>
           <TouchableOpacity onPress={handleprofilepage}>
             <FontAwesome5 name="user" size={35} color="#00CCBB" />
