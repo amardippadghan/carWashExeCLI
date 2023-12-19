@@ -22,26 +22,24 @@ import { Alert } from "react-native";
 const Stack = createStackNavigator();
 
 const App = () => {
-    const [isIntervalStarted, setIsIntervalStarted] = useState(false);
-   
+  const isIntervalStartedRef = useRef(false);
+  const locationIntervalRef = useRef(null);
 
   useEffect(() => {
-    console.log("Starting use effect");
     const checkLocationPermission = async () => {
       try {
         const status = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-         
-        
+
         console.log("Location permission status:", status);
-        if (status === 'granted' && !isIntervalStarted) {
+        if (status === 'granted' && !isIntervalStartedRef.current) {
           startLocationInterval();
-          setIsIntervalStarted(true);
+          isIntervalStartedRef.current = true;
         } else if (status !== 'granted') {
           const result = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
           console.log("Location permission result:", result);
-          if (result === 'granted' && !isIntervalStarted) {
+          if (result === 'granted' && !isIntervalStartedRef.current) {
             startLocationInterval();
-            setIsIntervalStarted(true);
+            isIntervalStartedRef.current = true;
           } else {
             console.error('Location permission denied.');
           }
@@ -54,7 +52,7 @@ const App = () => {
     const startLocationInterval = () => {
       console.log("Starting location interval.");
       let isFetchingLocation = false;
-      let locationInterval = setInterval(() => {
+      locationIntervalRef.current = setInterval(() => {
         console.log("Inside location interval.");
         if (!isFetchingLocation) {
           isFetchingLocation = true;
@@ -73,71 +71,53 @@ const App = () => {
             { enableHighAccuracy: true }
           );
         }
-      }, 60000);
+      }, 30000);
+    };
 
-      return () => {
-        console.log("Clearing location interval.");
-        clearInterval(locationInterval);
-      };
+    const patchLocation = async (latitude, longitude) => {
+      try {
+        console.log("Inside patchLocation. Latitude:", latitude, "Longitude:", longitude);
+        const storedAgentId = await AsyncStorage.getItem("userId");
+        const storedLocationId = await AsyncStorage.getItem("locationId");
+
+        if (storedLocationId) {
+          console.log("Location ID found: ", storedLocationId);
+          const patchData = {
+            location: { latitude, longitude },
+            AgentID: storedAgentId,
+            bookingID: [],
+            lastSeen: new Date().toLocaleString("en-IN", {
+              timeZone: "Asia/Kolkata",
+            }),
+          };
+
+          const response = await axios.patch(
+            `https://car-wash-backend-api.onrender.com/api/agentlocation/${storedLocationId}`,
+            patchData
+          );
+
+          if (response.status === 200) {
+            console.log("Successfully patched", response.data);
+            const message = `Latitude: ${latitude}\nLongitude: ${longitude}\n Location updated Succesfully`;
+            Alert.alert("Success", message);
+          }
+        } else {
+          console.log("Location ID not found");
+        }
+      } catch (error) {
+        console.error("Error patching location:", error);
+      }
     };
 
     checkLocationPermission();
-  }, [isIntervalStarted]);
 
-  // useEffect(() => {
-  //   const displayAsyncStorageItems = async () => {
-  //     try {
-  //       const allKeys = await AsyncStorage.getAllKeys();
-  //       const items = await AsyncStorage.multiGet(allKeys);
-  //       let alertMessage = "AsyncStorage Items:\n";
-  //       items.forEach(item => {
-  //         alertMessage += `${item[0]}: ${item[1]}\n`;
-  //       });
-  //       Alert.alert("AsyncStorage Items", alertMessage);
-  //       console.log(alertMessage)
-  //     } catch (error) {
-  //       console.error("Error retrieving AsyncStorage items:", error);
-  //     }
-  //   };
-
-  //   displayAsyncStorageItems();
-  // }, []);
-
-  const patchLocation = async (latitude, longitude) => {
-    try {
-      console.log("Inside patchLocation. Latitude:", latitude, "Longitude:", longitude);
-      const storedAgentId = await AsyncStorage.getItem("userId");
-      const storedLocationId = await AsyncStorage.getItem("locationId");
-
-      if (storedLocationId) {
-        console.log("Location ID found: ", storedLocationId);
-        const patchData = {
-          location: { latitude, longitude },
-          AgentID: storedAgentId,
-          bookingID: [],
-          lastSeen: new Date().toLocaleString("en-IN", {
-            timeZone: "Asia/Kolkata",
-          }),
-        };
-
-        const response = await axios.patch(
-          `https://car-wash-backend-api.onrender.com/api/agentlocation/${storedLocationId}`,
-          patchData
-        );
-
-       if (response.status === 200) {
-          console.log("Successfully patched" , response.data);
-          const message = `Latitude: ${latitude}\nLongitude: ${longitude}\nSuccessfully patched`;
-          Alert.alert("Success", message); // Display an alert with the success message
-        }
-      } else {
-        console.log("Location ID not found");
+    return () => {
+      if (locationIntervalRef.current) {
+        clearInterval(locationIntervalRef.current);
+        locationIntervalRef.current = null;
       }
-    } catch (error) {
-      console.error("Error patching location:", error);
-    }
-  };
-  
+    };
+  }, []);
 
   return (
     <NavigationContainer>

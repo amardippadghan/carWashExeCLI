@@ -8,8 +8,7 @@ import {
   useColorScheme,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {PERMISSIONS, request, check} from 'react-native-permissions';
-import Geolocation from '@react-native-community/geolocation';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import tw from 'twrnc';
@@ -19,9 +18,9 @@ export default function OnGoingBookingDetails({route}) {
   const isDarkMode = colorScheme === 'dark';
   const {booking} = route.params;
   const navigation = useNavigation();
-  const [currentLocation, setCurrentLocation] = useState(null);
+
   const [bookingDetails, setBookingDetails] = useState(booking);
-  const [isTrackingActive, setIsTrackingActive] = useState(false);
+  
 
   const handleCallClient = () => {
     const phoneNumber = bookingDetails.clientContact;
@@ -67,84 +66,7 @@ const patchBookingStatus = async status => {
 
 
 
-  useEffect(() => {
-    let isFetchingLocation = false;
-    let locationInterval;
 
-    const checkLocationPermission = async () => {
-      const status = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      if (status === 'granted') {
-        startLocationInterval();
-      } else {
-        const result = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-        if (result === 'granted') {
-          startLocationInterval();
-        } else {
-          console.error('Location permission denied.');
-        }
-      }
-    };
-
-    const startLocationInterval = () => {
-      locationInterval = setInterval(() => {
-        if (!isFetchingLocation && isTrackingActive) {
-          isFetchingLocation = true;
-          Geolocation.getCurrentPosition(
-            position => {
-              const {latitude, longitude} = position.coords;
-              setCurrentLocation({latitude, longitude});
-              console.log(latitude);
-              console.log(longitude)
-              patchLocation({latitude, longitude});
-            },
-            error => {
-              console.error('Error getting location:', error);
-            },
-            {enableHighAccuracy: true}, // Adjust the timeout to 4 minutes (240000 milliseconds)
-          );
-        }
-      }, 30000); // Set interval to 10 seconds (10000 milliseconds)
-    };
-
-
-    const patchLocation = ({latitude, longitude}) => {
-      const patchData = {
-        location: {latitude, longitude},
-        AgentID: bookingDetails.agentId,
-        bookingID: [bookingDetails._id],
-        lastSeen: new Date().toLocaleString('en-IN', {
-          timeZone: 'Asia/Kolkata',
-        }),
-      };
-
-      axios
-        .patch(
-          `https://car-wash-backend-api.onrender.com/api/agentlocation/${bookingDetails.locationId}`,
-          patchData,
-        )
-        .then(response => {
-          isFetchingLocation = false;
-          console.log(response.data);
-          if (response.status == 200) {
-            console.log('succesfully patched ');
-          }
-        })
-        .catch(error => {
-          console.error('Error patching location:', error);
-          isFetchingLocation = false;
-        });
-    };
-
-    checkLocationPermission();
-
-    return () => {
-      clearInterval(locationInterval);
-    };
-  }, [isTrackingActive]);
-
-  const startTrackingLocation = () => {
-    setIsTrackingActive(!isTrackingActive);
-  };
 
   return (
     <View
@@ -152,16 +74,7 @@ const patchBookingStatus = async status => {
         tw`flex-1 p-4 pt-10 `,
         isDarkMode ? tw`bg-gray-800` : tw`bg-gray-200 `,
       ]}>
-      <TouchableOpacity
-        style={[
-          tw`w-15 h-15 mb-3 rounded-2xl items-center justify-center self-end`,
-          isTrackingActive ? tw`bg-red-500` : tw`bg-blue-500`,
-        ]}
-        onPress={startTrackingLocation}>
-        <Text style={tw`font-sans text-sm text-black`}>
-          {isTrackingActive ? 'Stop Tracking' : 'Start Tracking'}
-        </Text>
-      </TouchableOpacity>
+      
 
       {bookingDetails ? (
         <View>
@@ -241,29 +154,7 @@ const patchBookingStatus = async status => {
         </Text>
       )}
 
-      {currentLocation ? (
-        <View style={tw`mt-5`}>
-          <Text
-            style={tw`text-base text-${
-              isDarkMode ? 'green-300' : 'green-500'
-            }`}>
-            Current Latitude: {currentLocation.latitude}
-          </Text>
-          <Text
-            style={tw`text-base text-${
-              isDarkMode ? 'green-300' : 'green-500'
-            }`}>
-            Current Longitude: {currentLocation.longitude}
-          </Text>
-        </View>
-      ) : (
-        <View style={tw`mt-5`}>
-          <Text
-            style={tw`text-base text-${isDarkMode ? 'red-500' : 'red-500'}`}>
-            Location is not available
-          </Text>
-        </View>
-      )}
+      
     </View>
   );
 }
