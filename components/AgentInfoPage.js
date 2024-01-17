@@ -45,26 +45,35 @@ const AgentInfoPage = () => {
   };
 
  
-  const openImagePicker = () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
-    };
-
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('Image picker error: ', response.error);
-      } else {
-        let imageUri = response.uri || response.assets?.[0]?.uri;
-        setProfilePic(imageUri);
-      }
-    });
+const openImagePicker = () => {
+  const options = {
+    mediaType: 'photo',
+    includeBase64: false,
+    maxHeight: 2000,
+    maxWidth: 2000,
   };
 
+  launchImageLibrary(options, response => {
+    if (response.didCancel) {
+      console.log('User cancelled image picker');
+    } else if (response.error) {
+      console.log('Image picker error: ', response.error);
+    } else {
+      let imageUri = response.uri || response.assets?.[0]?.uri;
+
+      // Generate a unique filename based on the current timestamp
+      const uriParts = imageUri.split('.');
+      const fileType = uriParts[uriParts.length - 1];
+      const uniqueFileName = `photo_${Date.now()}.${fileType}`;
+
+      setProfilePic({
+        uri: imageUri,
+        name: uniqueFileName,
+        type: `image/${fileType}`,
+      });
+    }
+  });
+};
 
 const handleSave = async () => {
   if (isSaving) {
@@ -103,15 +112,9 @@ const handleSave = async () => {
   formData.append('dateOfBirth', formattedDateOfBirth);
   formData.append('address', address);
   formData.append('password', password);
-  if (profilePic) {
-    const uriParts = profilePic.split('.');
-    const fileType = uriParts[uriParts.length - 1];
-    formData.append('image', {
-      uri: profilePic,
-      name: `photo.${fileType}`,
-      type: `image/${fileType}`,
-    });
-  }
+    if (profilePic) {
+      formData.append('image', profilePic);
+    }
 
   try {
     const response = await axios.post(

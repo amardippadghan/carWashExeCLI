@@ -8,12 +8,13 @@ import {
   FlatList,
   useColorScheme,
   ActivityIndicator,
-  Button,
+  Alert,
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {launchImageLibrary, ImagePicker} from 'react-native-image-picker';
 import tw from 'twrnc';
 
 const ProfilePage = () => {
@@ -29,9 +30,8 @@ const ProfilePage = () => {
     contactNumber: '',
     dateOfBirth: '',
     address: '',
-    profilePic : '',
+    profilePic: '',
   });
-  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -46,7 +46,6 @@ const ProfilePage = () => {
           );
 
           setProfileData(response.data);
-          
         } else {
           console.log('User ID not found in AsyncStorage');
         }
@@ -60,23 +59,92 @@ const ProfilePage = () => {
     fetchUserData();
   }, []);
 
-  const handleEdit = () => {
-    
-    navigation.navigate('editProfile', {
-      profileData: profileData
-     
+  const handleProfilePicChange = () => {
+    Alert.alert(
+      'Change Profile Picture',
+      'Do you want to change your profile picture?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => launchImagePicker(),
+        },
+      ],
+    );
+  };
+
+  const launchImagePicker = () => {
+    const options = {
+      title: 'Select Profile Picture',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+      } else {
+        const imageUri = response.uri || response.assets?.[0]?.uri;
+        showUploadAlert(imageUri);
+      }
     });
   };
 
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('userId');
-    navigation.navigate('Login');
+  const showUploadAlert = imageUri => {
+    Alert.alert(
+      'Upload Image',
+      'Do you want to upload this image as your profile picture?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Upload',
+          onPress: () => uploadProfilePic(imageUri),
+        },
+      ],
+    );
   };
 
-  
-  
+  const uploadProfilePic = async imageUri => {
+    try {
+      const formData = new FormData();
+      formData.append('image', {
+        uri: imageUri,
+        name: `photo_${new Date().getTime()}.jpg`, // Use timestamp for a unique name
+        type: 'image/jpeg',
+      });
+      const userId = await AsyncStorage.getItem('userId');
 
-  // Data for the agent information table
+      const response = await axios.patch(
+        `https://car-wash-backend-api.onrender.com/api/agents/${userId}/profilepic`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
+      // Handle success, e.g., update the profile picture in your state
+      setProfileData(prevState => ({
+        ...prevState,
+        profilePic: response.data.profilePic,
+      }));
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+      // Handle error, show an alert, etc.
+    }
+  };
+
   const agentInfoData = [
     {label: 'Full Name', value: profileData.fullName},
     {label: 'Email', value: profileData.email},
@@ -91,6 +159,11 @@ const ProfilePage = () => {
       <Text style={tw`text-lg w-60 text-black`}>{item.value}</Text>
     </View>
   );
+  const handleLogout = async () => {
+    const remove = await AsyncStorage.removeItem('userId');
+
+    navigation.navigate('Login');
+  };
 
   return (
     <View
@@ -100,7 +173,7 @@ const ProfilePage = () => {
       <View style={tw`flex-row justify-between items-center w-full px-8 mb-5`}>
         <Text style={tw`text-2xl font-bold ${textColor}`}>Profile</Text>
         <TouchableOpacity
-          onPress={handleLogout}
+          onPress={handleLogout} // Change this to your logout screen or logic
           style={tw`bg-yellow-300 py-1 px-3 rounded-lg`}>
           <Text style={tw`text-lg text-black`}>Logout</Text>
         </TouchableOpacity>
@@ -114,16 +187,15 @@ const ProfilePage = () => {
         />
       ) : (
         <>
-        {console.log(profileData)}
-          <TouchableOpacity >
-             {profileData.profilePic ? (
+          <TouchableOpacity onPress={handleProfilePicChange}>
+            {profileData.profilePic ? (
               <Image
-                source={{ uri: profileData.profilePic }}
+                source={{uri: profileData.profilePic}}
                 style={tw`w-52 h-52 rounded-full`}
               />
             ) : (
               <Image
-                source={{ uri: 'https://picsum.photos/200' }}
+                source={{uri: 'https://picsum.photos/200'}}
                 style={tw`w-52 h-52 rounded-full`}
               />
             )}
@@ -140,14 +212,12 @@ const ProfilePage = () => {
             />
           </View>
           <TouchableOpacity
-            onPress={handleEdit}
+            onPress={() => navigation.navigate('editProfile', {profileData})}
             style={tw`bg-blue-300 py-2 px-6 rounded-lg mt-5`}>
             <Text style={tw`text-lg text-black`}>Edit</Text>
           </TouchableOpacity>
         </>
       )}
-
-      
     </View>
   );
 };
