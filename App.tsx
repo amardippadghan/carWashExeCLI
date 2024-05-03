@@ -92,7 +92,7 @@ const App = () => {
           };
 
           const response = await axios.patch(
-            `https://car-wash-backend-api.onrender.com/api/agentlocation/${storedLocationId}`,
+            `http://backend.eastwayvisa.com/api/agentlocation/${storedLocationId}`,
             patchData
           );
 

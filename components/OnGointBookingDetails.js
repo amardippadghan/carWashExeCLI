@@ -48,7 +48,7 @@ const patchBookingStatus = async status => {
     }
 
     const response = await axios.patch(
-      `https://car-wash-backend-api.onrender.com/api/bookings/${bookingDetails._id}`,
+      `http://backend.eastwayvisa.com/api/bookings/${bookingDetails._id}`,
       {status},
     );
 

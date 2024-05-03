@@ -121,7 +121,7 @@ export default function EditProfile({ route }) {
       };
 
       const response = await axios.patch(
-        `https://car-wash-backend-api.onrender.com/api/agents/${profileData._id}`,
+        `http://backend.eastwayvisa.com/api/agents/${profileData._id}`,
         updatedProfile
       );
 

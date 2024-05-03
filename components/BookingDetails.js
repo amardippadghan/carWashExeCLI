@@ -23,7 +23,7 @@ const BookingDetailsScreen = props => {
   useEffect(() => {
     axios
       .get(
-        `https://car-wash-backend-api.onrender.com/api/bookings/${bookingId}`,
+        `http://backend.eastwayvisa.com/api/bookings/${bookingId}`,
       )
       .then(response => {
         setBookingDetails(response.data);
@@ -36,7 +36,7 @@ const BookingDetailsScreen = props => {
   const handleAccept = () => {
     axios
       .patch(
-        `https://car-wash-backend-api.onrender.com/api/bookings/${bookingId}`,
+        `http://backend.eastwayvisa.com/api/bookings/${bookingId}`,
         {
           status: 'WorkOnIt',
         },

@@ -8,7 +8,7 @@ const ViewHistory = ({ route }) => {
   useEffect(() => {
     const customerId = route.params.customer._id;
     // Replace 'API_URL' with your actual API endpoint
-    const apiUrl = `https://car-wash-backend-api.onrender.com/api/bookings/${customerId}`;
+    const apiUrl = `http://backend.eastwayvisa.com/api/bookings/${customerId}`;
 
     fetch(apiUrl)
       .then((response) => response.json())

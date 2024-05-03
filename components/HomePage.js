@@ -47,7 +47,7 @@ const HomePage = () => {
     console.log(userId)
     try {
       const response = await axios.get(
-        `https://car-wash-backend-api.onrender.com/api/bookings/agentId/${userId}`,
+        `http://backend.eastwayvisa.com/api/bookings/agentId/${userId}`,
       );
       setBookings(response.data);
     } catch (error) {

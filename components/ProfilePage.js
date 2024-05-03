@@ -42,7 +42,7 @@ const ProfilePage = () => {
           setLoading(true);
 
           const response = await axios.get(
-            `https://car-wash-backend-api.onrender.com/api/agents/${userId}`,
+            `http://backend.eastwayvisa.com/api/agents/${userId}`,
           );
 
           setProfileData(response.data);
@@ -125,7 +125,7 @@ const ProfilePage = () => {
       const userId = await AsyncStorage.getItem('userId');
 
       const response = await axios.patch(
-        `https://car-wash-backend-api.onrender.com/api/agents/${userId}/profilepic`,
+        `http://backend.eastwayvisa.com/api/agents/${userId}/profilepic`,
         formData,
         {
           headers: {
